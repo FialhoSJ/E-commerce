@@ -1,30 +1,19 @@
-import { ProductType } from "@/lib/types/ProductType";
-import Product from "./components/Product";
+import Link from 'next/link';
 
-async function getProducts() {
-  const res = await fetch('https://fakestoreapi.com/products')
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
+const highlights = [
+  { number: '01', title: 'Design que comunica', text: 'Peças pensadas para transformar espaços e criar presença.' },
+  { number: '02', title: 'Feito para durar', text: 'Materiais e acabamentos escolhidos para acompanhar sua rotina.' },
+  { number: '03', title: 'Compra sem complicação', text: 'Escolha online, tire suas dúvidas e receba onde estiver.' },
+];
 
-  return res.json();
-}
-
-export default async function Home() {
-  const products = await getProducts();
-
-
-  return (
-    <div className="max-w-7xl mx-auto pt-8 px-8 xl:px-0">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 
-      gap-6">
-
-        {products.map((product: any) => (
-          <Product key={product.id} product={product}></Product>
-        ))}
-
-      </div>
-      <h1>Page-commerce</h1>
-    </div >
-  );
+export default function Home() {
+  return <div className="bg-[#f8faf9] text-slate-950">
+    <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-24 pt-20 lg:grid-cols-[1.05fr_.95fr] lg:px-10 lg:pt-28">
+      <div><p className="mb-5 text-sm font-bold uppercase tracking-[0.22em] text-teal-700">Design para viver melhor</p><h1 className="max-w-3xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">Ideias que ganham forma.</h1><p className="mt-7 max-w-xl text-lg leading-8 text-slate-600">Criamos produtos com estética, função e personalidade para tornar os ambientes mais seus.</p><div className="mt-9 flex flex-wrap gap-3"><Link href="/loja" className="rounded-full bg-slate-950 px-6 py-3.5 font-semibold text-white transition hover:bg-teal-700">Conheça a loja <span className="ml-2">↗</span></Link><a href="#sobre" className="rounded-full border border-slate-300 px-6 py-3.5 font-semibold text-slate-700 transition hover:border-slate-950">Sobre a empresa</a></div></div>
+      <div className="relative min-h-[420px] overflow-hidden rounded-[2rem] bg-slate-900 p-8 text-white sm:min-h-[500px]"><div className="absolute -right-16 -top-20 h-72 w-72 rounded-full bg-teal-400/80 blur-3xl" /><div className="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-amber-200/50 blur-3xl" /><div className="relative flex h-full flex-col justify-between"><span className="text-sm font-medium text-white/70">EST. 2024</span><div><p className="max-w-xs text-4xl font-medium leading-tight">Menos excesso.<br /><span className="text-teal-300">Mais intenção.</span></p><div className="mt-8 flex items-center gap-3 text-sm text-white/70"><span className="h-px w-12 bg-white/40" />Produtos que fazem sentido.</div></div></div></div>
+    </section>
+    <section id="sobre" className="border-y border-slate-200 bg-white"><div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-10"><div><p className="text-sm font-bold uppercase tracking-[0.22em] text-teal-700">O nosso jeito</p><h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight sm:text-4xl">A beleza está no que permanece.</h2></div><div className="grid gap-8 sm:grid-cols-3">{highlights.map((item) => <div key={item.number}><span className="text-sm font-bold text-teal-600">{item.number}</span><h3 className="mt-5 font-semibold">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p></div>)}</div></div></section>
+    <section className="mx-auto max-w-7xl px-6 py-20 lg:px-10"><div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><div><p className="text-sm font-bold uppercase tracking-[0.22em] text-teal-700">Nossa seleção</p><h2 className="mt-3 text-3xl font-semibold tracking-tight">Descubra a coleção</h2></div><Link href="/loja" className="font-semibold text-teal-700 hover:text-teal-900">Ver todos os produtos <span className="ml-1">→</span></Link></div><div className="mt-10 grid gap-5 sm:grid-cols-3"><div className="rounded-3xl bg-[#dceeea] p-7"><p className="text-sm text-teal-800">Para sua casa</p><h3 className="mt-24 text-2xl font-semibold">Objetos com propósito.</h3></div><div className="rounded-3xl bg-[#f0e9da] p-7"><p className="text-sm text-amber-900">Para presentear</p><h3 className="mt-24 text-2xl font-semibold">Escolhas que marcam.</h3></div><div className="rounded-3xl bg-slate-900 p-7 text-white"><p className="text-sm text-teal-300">Para todos os dias</p><h3 className="mt-24 text-2xl font-semibold">Detalhes que ficam.</h3></div></div></section>
+    <footer className="border-t border-slate-200 bg-white"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-10"><span>© 2024 3D Store. Feito com intenção.</span><Link href="/loja" className="font-semibold text-slate-900">Ir para a loja →</Link></div></footer>
+  </div>;
 }
