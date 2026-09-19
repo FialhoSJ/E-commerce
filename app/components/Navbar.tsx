@@ -8,7 +8,8 @@ function Navbar() {
           <Link href="/" className="flex h-12 items-center gap-2 text-sm font-bold tracking-[0.18em]">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-950 text-xs text-white">3D</span> STORE
           </Link>
-          <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex"><Link href="/" className="hover:text-slate-950">Empresa</Link><Link href="/loja" className="hover:text-slate-950">Loja</Link><Link href="/#sobre" className="hover:text-slate-950">Sobre nós</Link></div>
+          <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex"><Link href="/" className="hover:text-slate-950">Empresa</Link><Link href="/#sobre" className="hover:text-slate-950">Sobre nós</Link><Link href="/loja" className="hover:text-slate-950">Loja</Link></div>
+          
           <div className="flex items-center gap-1"><AccountButton /><Cart /></div>
         </nav>
     )
