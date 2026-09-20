@@ -5,12 +5,14 @@ import { ProductType } from '@/lib/types/ProductType';
 
 export type User = { name: string; email: string };
 export type CartItem = ProductType & { quantity: number };
+export type Order = { id: string; items: CartItem[]; total: number; date: string };
 
 type StoreContextValue = {
   user: User | null;
   cart: CartItem[];
   cartCount: number;
   cartTotal: number;
+  lastOrder: Order | null;
   signIn: (email: string, password: string) => string | null;
   signUp: (name: string, email: string, password: string) => string | null;
   signOut: () => void;
@@ -20,6 +22,7 @@ type StoreContextValue = {
   addToCart: (product: ProductType) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
+  completeOrder: () => Order | null;
 };
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -27,6 +30,7 @@ const USERS_KEY = '3d-store-users';
 const SESSION_KEY = '3d-store-session';
 const CART_KEY = '3d-store-cart';
 const RESET_KEY = '3d-store-reset';
+const ORDER_KEY = '3d-store-last-order';
 
 type StoredUser = User & { password: string };
 
@@ -40,6 +44,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === 'undefined') return [];
     const savedCart = localStorage.getItem(CART_KEY);
     return savedCart ? JSON.parse(savedCart) : [];
+  });
+  const [lastOrder, setLastOrder] = useState<Order | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const savedOrder = localStorage.getItem(ORDER_KEY);
+    return savedOrder ? JSON.parse(savedOrder) : null;
   });
 
   useEffect(() => {
@@ -125,11 +134,26 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setCart((items) => items.map((item) => item.id === productId ? { ...item, quantity } : item));
   }, [removeFromCart]);
 
+  const completeOrder = useCallback((): Order | null => {
+    if (cart.length === 0) return null;
+    const order: Order = {
+      id: `3DS-${Date.now().toString(36).toUpperCase()}`,
+      items: cart,
+      total: cart.reduce((total, item) => total + (item.price || 0) * item.quantity, 0),
+      date: new Date().toISOString(),
+    };
+    localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    setLastOrder(order);
+    setCart([]);
+    return order;
+  }, [cart]);
+
   const value = useMemo(() => ({
     user, cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0),
     cartTotal: cart.reduce((total, item) => total + (item.price || 0) * item.quantity, 0),
-    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity,
-  }), [user, cart, removeFromCart, updateQuantity]);
+    lastOrder,
+    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, completeOrder,
+  }), [user, cart, lastOrder, removeFromCart, updateQuantity, completeOrder]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

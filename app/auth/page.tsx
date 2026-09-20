@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { useStore } from '../components/StoreProvider';
 
 type Mode = 'login' | 'signup' | 'forgot';
@@ -37,12 +38,13 @@ export default function AuthPage() {
       }
       if (password.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return; }
       if (password !== confirmPassword) { setError('As senhas não conferem.'); return; }
-      if (resetPassword(email, password)) { setMessage('Senha redefinida com sucesso.'); setTimeout(() => changeMode('login'), 900); } else setError('Não foi possível concluir. Solicite um novo código.');
+      if (resetPassword(email, password)) { toast.success('Senha redefinida com sucesso!'); setMessage('Senha redefinida com sucesso.'); setTimeout(() => changeMode('login'), 900); } else setError('Não foi possível concluir. Solicite um novo código.');
       return;
     }
     if (password.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return; }
     const result = mode === 'login' ? signIn(email, password) : signUp(name, email, password);
-    if (result) setError(result); else router.push(redirect);
+    if (result) setError(result);
+    else { toast.success(mode === 'login' ? 'Login realizado com sucesso!' : 'Conta criada com sucesso!'); router.push(redirect); }
   };
 
   const forgotTitle = resetStep === 'email' ? 'Recuperar senha' : resetStep === 'otp' ? 'Digite o código' : 'Criar nova senha';
