@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Configuração do administrador e catálogo
+
+O acesso administrativo usa o e-mail definido em `ADMIN_EMAIL` (no exemplo, `admin@admin.com`) e a senha privada definida em `ADMIN_PASSWORD`. Copie `.env.example` para `.env.local`, substitua os valores de exemplo e defina `ADMIN_SESSION_SECRET` com um segredo aleatório longo. Essas variáveis devem ficar somente no servidor.
+
+O catálogo precisa do Supabase configurado em `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. Em um banco novo, execute `database/schema.sql` no SQL Editor do Supabase. Se a tabela `products` já existir, execute `database/admin_catalog_migration.sql`.
+
+Depois de reiniciar a aplicação e entrar com o e-mail e a senha administrativos na tela de login normal, a aba `Admin` aparece na navegação. O painel permite criar, editar e excluir produtos; as alterações são persistidas no Supabase e aparecem na loja.

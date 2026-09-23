@@ -74,7 +74,7 @@ export default function Cart() {
                   <div className="mt-6 min-h-0 flex-1 space-y-4 overflow-y-auto">
                     {cart.map((item) => (
                       <div key={item.id} className="flex gap-3 border-b pb-4">
-                        <Image src={item.image} alt="" width={64} height={64} className="h-16 w-16 object-contain" />
+                        <Image src={item.image} alt="" unoptimized width={64} height={64} className="h-16 w-16 object-contain" />
                         <div className="min-w-0 flex-1">
                           <p className="truncate font-semibold">{item.title}</p>
                           <p className="text-sm text-teal-700">{money(item.price || 0)}</p>

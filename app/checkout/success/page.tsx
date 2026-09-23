@@ -54,6 +54,8 @@ export default function SuccessPage() {
               <span>Total</span>
               <span>{money(lastOrder.total)}</span>
             </div>
+            {lastOrder.shipping !== undefined && <div className="mt-3 flex justify-between text-sm text-slate-500"><span>Frete</span><span>{lastOrder.shipping ? money(lastOrder.shipping) : 'Grátis'}</span></div>}
+            {lastOrder.status && <p className="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Status: pagamento pendente. O pedido será atualizado após a confirmação do gateway.</p>}
           </>
         ) : (
           <p className="mt-8 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">

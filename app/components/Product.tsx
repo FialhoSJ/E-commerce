@@ -3,16 +3,21 @@
 import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { motion, type HTMLMotionProps } from 'framer-motion';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ProductType } from '@/lib/types/ProductType';
+import { useStore } from './StoreProvider';
 
-export interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ProductCardProps extends Omit<HTMLMotionProps<'div'>, 'ref'> {
   imageUrl: string;
   name: string;
   tagline: string;
   price: number;
   currency?: string;
+  onAddToCart?: () => void;
+  onBuyNow?: () => void;
   isCouponPrice?: boolean;
   originalPrice?: number;
   offerText: string;
@@ -20,7 +25,7 @@ export interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
-  ({ className, imageUrl, name, tagline, price, currency = 'R$', isCouponPrice = false, originalPrice, offerText, href, ...props }, ref) => {
+  ({ className, imageUrl, name, tagline, price, currency = 'R$', isCouponPrice = false, originalPrice, offerText, href, onAddToCart, onBuyNow, ...props }, ref) => {
     const formatPrice = (amount: number) =>
       new Intl.NumberFormat('pt-BR', {
         style: 'currency',
@@ -42,6 +47,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
         <div className="relative mb-5 flex h-44 w-full items-center justify-center rounded-2xl bg-slate-50 p-4">
           <Image
             src={imageUrl}
+            unoptimized
             alt={name}
             fill
             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
@@ -63,11 +69,11 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
             {originalPrice !== undefined && <span className="text-slate-400 line-through">{formatPrice(originalPrice)}</span>}
             <span className="font-semibold text-amber-600">{offerText}</span>
           </div>
-          {href && (
-            <Link href={href} className="mt-1 w-full rounded-full bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700">
-              Ver detalhes
-            </Link>
-          )}
+          <div className="grid w-full gap-2 sm:grid-cols-2">
+            {onAddToCart && <button onClick={onAddToCart} className="rounded-full border border-slate-300 px-3 py-2.5 text-xs font-semibold text-slate-800 transition hover:border-teal-600 hover:text-teal-700">Adicionar ao carrinho</button>}
+            {onBuyNow && <button onClick={onBuyNow} className="rounded-full bg-teal-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-teal-500">Comprar agora</button>}
+          </div>
+          {href && <Link href={href} className="mt-1 text-sm font-semibold text-slate-600 transition hover:text-teal-700">Ver detalhes →</Link>}
         </div>
       </motion.div>
     );
@@ -77,6 +83,14 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
 ProductCard.displayName = 'ProductCard';
 
 export function Product({ product }: { product: ProductType }) {
+  const router = useRouter();
+  const { user, addToCart } = useStore();
+  const add = () => { addToCart(product); toast.success(`${product.title} adicionado ao carrinho.`); };
+  const buyNow = () => {
+    addToCart(product);
+    router.push(user ? '/checkout' : '/auth?redirect=/checkout');
+  };
+
   return (
     <ProductCard
       imageUrl={product.image}
@@ -86,6 +100,8 @@ export function Product({ product }: { product: ProductType }) {
       currency="R$"
       offerText="Oferta especial"
       href={`/produto/${product.id}`}
+      onAddToCart={add}
+      onBuyNow={buyNow}
     />
   );
 }

@@ -18,11 +18,10 @@ export default function AuthPage() {
   const [password, setPassword] = useState(''); const [confirmPassword, setConfirmPassword] = useState(''); const [otp, setOtp] = useState('');
   const [message, setMessage] = useState(''); const [error, setError] = useState('');
   const [redirect] = useState(() => typeof window === 'undefined' ? '/' : new URLSearchParams(window.location.search).get('redirect') || '/');
-
-  useEffect(() => { if (user) router.replace(redirect); }, [user, router, redirect]);
+  const adminRedirect = redirect === '/admin';
+  useEffect(() => { if (user && !adminRedirect) router.replace(redirect); }, [user, router, redirect, adminRedirect]);
   const changeMode = (next: Mode) => { setMode(next); setError(''); setMessage(''); setResetStep('email'); };
-
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault(); setError(''); setMessage('');
     if (mode === 'forgot') {
       if (resetStep === 'email') {
@@ -42,6 +41,16 @@ export default function AuthPage() {
       return;
     }
     if (password.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return; }
+    if (mode === 'login' && (adminRedirect || email.trim().toLowerCase() === 'admin@admin.com')) {
+      try {
+        const response = await fetch('/api/auth/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+        const data = await response.json();
+        if (!response.ok) { setError(data.error || 'Não foi possível entrar como administrador.'); return; }
+        toast.success('Acesso administrativo autorizado.');
+        router.push('/admin');
+      } catch { setError('Não foi possível conectar ao servidor.'); }
+      return;
+    }
     const result = mode === 'login' ? signIn(email, password) : signUp(name, email, password);
     if (result) setError(result);
     else { toast.success(mode === 'login' ? 'Login realizado com sucesso!' : 'Conta criada com sucesso!'); router.push(redirect); }

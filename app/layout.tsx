@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={clsx('bg-[#f8faf9] font-sans')}>
         <StoreProvider><Navbar /><main className="min-h-screen">{children}</main></StoreProvider>
-        <Toaster richColors position="top-right" toastOptions={{ style: { borderRadius: '12px' } }} />
+        <Toaster richColors position="bottom-right" toastOptions={{ style: { borderRadius: '12px' } }} />
       </body>
     </html>
   );

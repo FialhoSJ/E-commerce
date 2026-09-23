@@ -17,16 +17,18 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
+  const catalogProducts = initialProducts;
+
 
   // Extrair categorias únicas
   const categories = useMemo(() => {
-    const cats = new Set(initialProducts.map((p) => p.category));
+    const cats = new Set(catalogProducts.map((p) => p.category));
     return ['all', ...Array.from(cats)];
-  }, [initialProducts]);
+  }, [catalogProducts]);
 
   // Filtrar e ordenar produtos
   const filteredProducts = useMemo(() => {
-    let result = [...initialProducts];
+    let result = [...catalogProducts];
 
     // Busca por texto
     if (searchQuery.trim() !== '') {
@@ -45,15 +47,15 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
     // Ordenação
     if (sortBy === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
     } else if (sortBy === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
     } else if (sortBy === 'title') {
       result.sort((a, b) => a.title.localeCompare(b.title));
     }
 
     return result;
-  }, [initialProducts, searchQuery, selectedCategory, sortBy]);
+  }, [catalogProducts, searchQuery, selectedCategory, sortBy]);
 
   return (
     <div className="bg-[#f8faf9] text-slate-950 min-h-screen">

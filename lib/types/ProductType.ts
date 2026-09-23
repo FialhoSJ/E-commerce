@@ -5,4 +5,14 @@ export type ProductType = {
     description: string | null;
     category: string;
     image: string;
-}
+    stock?: number;
+};
+
+export type ProductReview = {
+    id: string;
+    productId: number;
+    author: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+};

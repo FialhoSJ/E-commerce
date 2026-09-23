@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Cart from "./Cart"
 import AccountButton from "./AccountButton"
+import AdminLink from "./AdminLink"
 
 function Navbar() {
     return (
@@ -10,7 +11,7 @@ function Navbar() {
           </Link>
           <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex"><Link href="/" className="hover:text-slate-950">Home</Link><Link href="/#sobre" className="hover:text-slate-950">Sobre nós</Link><Link href="/loja" className="hover:text-slate-950">Loja</Link></div>
           
-          <div className="flex items-center gap-1"><AccountButton /><Cart /></div>
+          <div className="flex items-center gap-1"><AdminLink /><AccountButton /><Cart /></div>
         </nav>
     )
 }

@@ -1,14 +1,16 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ProductType } from '@/lib/types/ProductType';
+import { ProductReview, ProductType } from '@/lib/types/ProductType';
 
-export type User = { name: string; email: string };
+export type User = { name: string; email: string; isAdmin?: boolean };
 export type CartItem = ProductType & { quantity: number };
-export type Order = { id: string; items: CartItem[]; total: number; date: string };
+export type Order = { id: string; items: CartItem[]; total: number; subtotal?: number; shipping?: number; date: string; status?: string };
 
 type StoreContextValue = {
   user: User | null;
+  reviews: Record<number, ProductReview[]>;
+  addReview: (review: Omit<ProductReview, 'id' | 'createdAt' | 'author'>) => string | null;
   cart: CartItem[];
   cartCount: number;
   cartTotal: number;
@@ -23,6 +25,7 @@ type StoreContextValue = {
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   completeOrder: () => Order | null;
+  saveOrder: (order: Order) => void;
 };
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -31,35 +34,49 @@ const SESSION_KEY = '3d-store-session';
 const CART_KEY = '3d-store-cart';
 const RESET_KEY = '3d-store-reset';
 const ORDER_KEY = '3d-store-last-order';
+const REVIEWS_KEY = '3d-store-reviews';
 
 type StoredUser = User & { password: string };
 
+function readStorage<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  const saved = localStorage.getItem(key);
+  if (!saved) return fallback;
+  try { return JSON.parse(saved) as T; } catch { return fallback; }
+}
+
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    if (typeof window === 'undefined') return null;
-    const savedUser = localStorage.getItem(SESSION_KEY);
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const savedCart = localStorage.getItem(CART_KEY);
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
-  const [lastOrder, setLastOrder] = useState<Order | null>(() => {
-    if (typeof window === 'undefined') return null;
-    const savedOrder = localStorage.getItem(ORDER_KEY);
-    return savedOrder ? JSON.parse(savedOrder) : null;
-  });
+  const [hydrated, setHydrated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [lastOrder, setLastOrder] = useState<Order | null>(null);
+  const [reviews, setReviews] = useState<Record<number, ProductReview[]>>({});
 
   useEffect(() => {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }, [cart]);
+    const frame = window.requestAnimationFrame(() => {
+      setUser(readStorage<User | null>(SESSION_KEY, null));
+      setCart(readStorage<CartItem[]>(CART_KEY, []));
+      setLastOrder(readStorage<Order | null>(ORDER_KEY, null));
+      setReviews(readStorage<Record<number, ProductReview[]>>(REVIEWS_KEY, {}));
+      setHydrated(true);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
+  useEffect(() => {
+    if (!hydrated) return;
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }, [hydrated, cart]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
+  }, [hydrated, reviews]);
   const signIn = (email: string, password: string) => {
     const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     const found = users.find((item) => item.email === email.trim().toLowerCase() && item.password === password);
     if (!found) return 'E-mail ou senha inválidos.';
-    const session = { name: found.name, email: found.email };
+    const session = { name: found.name, email: found.email, isAdmin: found.isAdmin };
     setUser(session);
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     return null;
@@ -69,9 +86,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const normalizedEmail = email.trim().toLowerCase();
     const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     if (users.some((item) => item.email === normalizedEmail)) return 'Este e-mail já está cadastrado.';
-    const newUser = { name: name.trim(), email: normalizedEmail, password };
+    const newUser = { name: name.trim(), email: normalizedEmail, password, isAdmin: false };
     localStorage.setItem(USERS_KEY, JSON.stringify([...users, newUser]));
-    const session = { name: newUser.name, email: newUser.email };
+    const session = { name: newUser.name, email: newUser.email, isAdmin: false };
     setUser(session);
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     return null;
@@ -113,13 +130,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     const normalizedEmail = email.trim().toLowerCase();
     if (!users.some((item) => item.email === normalizedEmail)) return false;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users.map((item) => item.email === normalizedEmail ? { ...item, password } : item)));
     const reset = JSON.parse(localStorage.getItem(RESET_KEY) || 'null');
     if (!reset || reset.email !== normalizedEmail || !reset.verified || Date.now() > reset.expiresAt) return false;
     localStorage.setItem(USERS_KEY, JSON.stringify(users.map((item) => item.email === normalizedEmail ? { ...item, password } : item)));
     localStorage.removeItem(RESET_KEY);
     return true;
   };
+
+  const addReview = useCallback((review: Omit<ProductReview, 'id' | 'createdAt' | 'author'>) => {
+    if (!user) return 'Entre na sua conta para avaliar este produto.';
+    const nextReview: ProductReview = { ...review, id: `review-${Date.now()}`, author: user.name, createdAt: new Date().toISOString() };
+    setReviews((current) => ({ ...current, [review.productId]: [...(current[review.productId] || []), nextReview] }));
+    return null;
+  }, [user]);
 
   const addToCart = (product: ProductType) => setCart((items) => {
     const existing = items.find((item) => item.id === product.id);
@@ -148,12 +171,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return order;
   }, [cart]);
 
+  const saveOrder = useCallback((order: Order) => {
+    localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    setLastOrder(order);
+    setCart([]);
+  }, []);
+
   const value = useMemo(() => ({
-    user, cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0),
+    user, reviews, addReview,
+    cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0),
     cartTotal: cart.reduce((total, item) => total + (item.price || 0) * item.quantity, 0),
     lastOrder,
-    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, completeOrder,
-  }), [user, cart, lastOrder, removeFromCart, updateQuantity, completeOrder]);
+    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, completeOrder, saveOrder,
+  }), [user, reviews, addReview, cart, lastOrder, removeFromCart, updateQuantity, completeOrder, saveOrder]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
