@@ -1,0 +1,290 @@
+ORÇAMENTO DE SERVIÇOS NECESSÁRIOS PARA O FUNCIONAMENTO DO SITE
+Data: 23/09/2026
+
+1. OBJETIVO
+
+Este orçamento apresenta os serviços necessários para colocar o ecommerce em funcionamento, incluindo hospedagem, domínio, banco de dados, armazenamento de imagens e plataforma de pagamentos.
+
+2. RECOMENDAÇÃO PRINCIPAL
+
+Estrutura recomendada para o projeto:
+
+- Hospedagem da aplicação: Vercel Pro
+- Banco de dados e armazenamento: Supabase Pro
+- Domínio: registro separado, preferencialmente domínio .com.br
+- Pagamento: Mercado Pago Checkout Pro
+- Alternativa para pagamentos via Pix: Abacate Pay
+
+Estimativa mensal da infraestrutura principal:
+
+- Vercel Pro: aproximadamente R$ 102,53 por mês
+- Supabase Pro: aproximadamente R$ 128,16 por mês
+- Total estimado: aproximadamente R$ 230,69 por mês
+- O valor do domínio e as taxas das transações de pagamento são cobrados separadamente.
+
+Os valores em dólar foram convertidos de forma aproximada para reais e podem variar conforme o câmbio, impostos e alterações de preço dos fornecedores.
+
+3. DOMÍNIO E HOSPEDAGEM
+
+3.1 Hostinger
+
+Plano recomendado para economia:
+
+- Plano Next.js Unlimited: aproximadamente R$ 13,99 por mês no equivalente promocional.
+- Contratação promocional informada: R$ 671,52 no total por 48 meses.
+- Renovação informada: aproximadamente R$ 64,99 por mês.
+- Inclui recursos para Node.js, armazenamento de 50 GB, backups diários e domínio grátis no primeiro ano em condições promocionais.
+
+Plano com mais capacidade:
+
+- Cloud Startup: aproximadamente R$ 39,99 por mês no equivalente promocional.
+- Contratação promocional informada: R$ 1.919,52 no total por 48 meses.
+- Renovação informada: aproximadamente R$ 129,99 por mês.
+- Inclui 4 núcleos de CPU, 4 GB de RAM e 100 GB NVMe.
+
+Vantagens:
+
+- Menor custo inicial entre as opções com suporte a Node.js.
+- Recursos suficientes para uma primeira versão do ecommerce.
+- Backup diário e domínio promocional no primeiro ano.
+
+Pontos de atenção:
+
+- O preço promocional exige contratação antecipada por período longo.
+- O preço de renovação é mais alto.
+
+3.2 HostGator
+
+Hospedagem compartilhada:
+
+- Plano P: aproximadamente R$ 10,09 por mês no equivalente promocional, com contratação de 3 anos por R$ 361,61.
+- Plano M: aproximadamente R$ 11,49 por mês no equivalente promocional, com contratação de 3 anos por R$ 412,17.
+- Plano Turbo: aproximadamente R$ 18,69 por mês no equivalente promocional, com contratação de 3 anos por R$ 670,22.
+
+Vantagens:
+
+- Marca conhecida no mercado brasileiro.
+- Preço promocional baixo.
+- Servidores no Brasil em alguns planos.
+
+Pontos de atenção:
+
+- A hospedagem compartilhada não oferece suporte adequado para Node.js/Next.js.
+- Para este projeto, provavelmente será necessário utilizar VPS, que tem maior custo e exige mais configuração e gerenciamento.
+- Por isso, os planos compartilhados não são a melhor escolha para a aplicação atual.
+
+VPS:
+
+- Planos VPS anunciados a partir de aproximadamente R$ 21,69 por mês no valor promocional.
+- O valor final depende da configuração contratada e da necessidade de gerenciamento técnico.
+
+3.3 Vercel
+
+- Plano Hobby: gratuito, porém destinado a uso pessoal e não comercial.
+- Plano Pro: US$ 20 por mês, aproximadamente R$ 102,53 na cotação considerada.
+- Inclui domínio personalizado, créditos de uso, controle de gastos e estrutura adequada para aplicações Next.js.
+
+Vantagens:
+
+- É a plataforma mais integrada ao Next.js.
+- Deploy simples e automático a partir do Git.
+- Boa distribuição de conteúdo e desempenho para a aplicação.
+- Escala conforme o crescimento do projeto.
+
+Pontos de atenção:
+
+- O plano comercial recomendado é cobrado em dólar.
+- O valor final pode aumentar com consumo acima da franquia e impostos.
+- O domínio deve ser registrado separadamente ou adquirido por outro fornecedor.
+
+Recomendação de hospedagem:
+
+- Vercel Pro: melhor opção técnica para este projeto.
+- Hostinger Cloud Startup: melhor alternativa para reduzir custos, desde que o período antecipado e a configuração técnica sejam aceitos.
+- HostGator: considerar apenas com VPS, evitando hospedagem compartilhada.
+
+4. DOMÍNIO
+
+Uma opção de domínio .com.br encontrada foi:
+
+- Primeiro ano promocional: aproximadamente R$ 1,00.
+- Renovação: aproximadamente R$ 64,99 por ano.
+
+O preço promocional e o valor de renovação devem ser conferidos no momento da contratação. O domínio deve ser registrado em nome do proprietário do negócio.
+
+5. BANCO DE DADOS E ARMAZENAMENTO
+
+5.1 Supabase Free
+
+- Custo: US$ 0 por mês.
+- Até 50 mil usuários ativos mensais.
+- 500 MB de banco de dados.
+- 5 GB de transferência.
+- 1 GB de armazenamento de arquivos.
+- Projetos gratuitos podem ser pausados após período de inatividade.
+
+Indicado para:
+
+- Desenvolvimento, testes e início de operação com baixo volume.
+
+5.2 Supabase Pro
+
+- Custo: US$ 25 por mês, aproximadamente R$ 128,16 na cotação considerada.
+- 8 GB de disco.
+- 100 GB de armazenamento de arquivos.
+- 250 GB de transferência.
+- Backups diários de 7 dias.
+- Créditos de computação incluídos no plano pago.
+
+Indicado para:
+
+- Operação comercial com maior estabilidade.
+- Catálogo de produtos, pedidos, perfis e imagens armazenados no mesmo serviço.
+- Necessidade de backups e menor risco de pausa do projeto.
+
+Recomendação:
+
+- Usar Supabase Free durante o desenvolvimento e homologação.
+- Migrar para Supabase Pro quando o site entrar em operação comercial ou quando o volume de imagens e pedidos justificar.
+
+6. PLATAFORMAS DE PAGAMENTO
+
+6.1 Mercado Pago
+
+Taxas informadas para o Checkout:
+
+- Pix com recebimento imediato: 0,99% por transação.
+- Cartão com recebimento imediato: 4,98% por transação.
+- Cartão com recebimento em 14 dias: 4,49%.
+- Cartão com recebimento em 30 dias: 3,98%.
+- Boleto: R$ 3,49 por pagamento, com prazo de até 3 dias.
+
+Vantagens:
+
+- Marca conhecida e confiável no Brasil.
+- Pix, cartão, boleto e parcelamento.
+- Checkout Pro e opção de checkout transparente.
+- Cliente não precisa ter conta no Mercado Pago para pagar.
+- Boa opção para iniciar as vendas com variedade de meios de pagamento.
+
+Pontos de atenção:
+
+- As taxas são maiores que uma solução focada exclusivamente em Pix.
+- O prazo de recebimento interfere na taxa do cartão.
+
+6.2 Abacate Pay
+
+Taxas informadas:
+
+- Pix: R$ 0,80 por transação.
+- Saque Pix: R$ 0,80 nos primeiros 20 saques do mês e R$ 2,50 a partir do 21º.
+- Boleto: R$ 2,50; quando pago via Pix, R$ 0,80.
+- Sem mensalidade.
+
+Vantagens:
+
+- Custo baixo para pagamentos via Pix.
+- Recebimento rápido.
+- Boa alternativa para reduzir taxas no Pix.
+
+Pontos de atenção:
+
+- Menor variedade de meios de pagamento que o Mercado Pago.
+- Os limites iniciais de movimentação podem ser menores e sujeitos a análise.
+- Pode não ser suficiente como única plataforma de pagamento para um ecommerce que precisa oferecer cartão e parcelamento.
+
+6.3 Stripe
+
+Taxas informadas:
+
+- Cartão nacional: 3,99% + R$ 0,39 por transação.
+- Boleto: R$ 3,45 por transação.
+- Pix: 1,19%, mediante convite.
+- Cartões internacionais: acréscimo de 2%.
+- Sem mensalidade ou taxa de instalação.
+
+Vantagens:
+
+- Plataforma muito conhecida internacionalmente.
+- Excelente documentação e estrutura técnica.
+- Boa opção para projetos que pretendem vender fora do Brasil.
+
+Pontos de atenção:
+
+- O Pix pode depender de convite.
+- Para vendas somente no Brasil, o Mercado Pago tende a ser mais simples de implantar.
+
+Recomendação de pagamento:
+
+- Mercado Pago como plataforma principal.
+- Abacate Pay como opção complementar para Pix, caso a diferença de custo compense.
+- Stripe para uma futura expansão internacional.
+
+7. CENÁRIOS DE CUSTO
+
+7.1 Cenário econômico
+
+- Hostinger Cloud Startup: aproximadamente R$ 39,99 por mês no equivalente promocional.
+- Supabase Free: R$ 0 por mês durante o período de desenvolvimento ou baixo volume.
+- Domínio: aproximadamente R$ 1,00 no primeiro ano, conforme promoção.
+- Mercado Pago: sem mensalidade; cobrança por transação.
+
+Estimativa de infraestrutura mensal: aproximadamente R$ 39,99, mais domínio e taxas de pagamento.
+
+Observação: o valor da Hostinger depende de contratação antecipada e o Supabase Free possui limites de uso.
+
+7.2 Cenário recomendado para produção
+
+- Vercel Pro: aproximadamente R$ 102,53 por mês.
+- Supabase Pro: aproximadamente R$ 128,16 por mês.
+- Domínio: valor anual conforme registrador e extensão escolhida.
+- Mercado Pago: sem mensalidade; cobrança por transação.
+
+Estimativa de infraestrutura mensal: aproximadamente R$ 230,69, mais domínio e taxas de pagamento.
+
+7.3 Cenário Pix com menor custo por transação
+
+- Vercel Pro ou Hostinger Cloud Startup.
+- Supabase Free ou Pro, conforme o volume.
+- Abacate Pay para pagamentos via Pix.
+
+Esse cenário reduz o custo por Pix, mas oferece menos opções de pagamento ao cliente.
+
+8. CUSTOS QUE PODEM SER NECESSÁRIOS NO PROJETO
+
+- Registro e renovação do domínio.
+- Hospedagem da aplicação.
+- Banco de dados.
+- Armazenamento de imagens dos produtos.
+- Taxas por transação da plataforma de pagamento.
+- Eventuais custos de uso excedente da Vercel ou do Supabase.
+- Configuração inicial, publicação, configuração de domínio e variáveis de ambiente.
+- Manutenção, atualizações e suporte técnico, caso contratados separadamente.
+
+9. CONCLUSÃO E RECOMENDAÇÃO COMERCIAL
+
+Para colocar o site no ar com boa estabilidade e possibilidade de crescimento, recomenda-se contratar:
+
+- Vercel Pro para hospedar o ecommerce.
+- Supabase Pro para banco de dados, imagens e pedidos.
+- Um domínio .com.br registrado em nome do cliente.
+- Mercado Pago Checkout Pro como meio de pagamento principal.
+
+O investimento recorrente estimado para Vercel e Supabase é de aproximadamente R$ 230,69 por mês, sem incluir domínio, impostos, custos excedentes e taxas sobre as vendas.
+
+Para iniciar com menor custo, é possível usar Hostinger Cloud Startup e Supabase Free, com migração posterior para Vercel Pro e Supabase Pro quando o site começar a receber tráfego e pedidos.
+
+10. FONTES CONSULTADAS
+
+- Supabase: https://supabase.com/pricing
+- Hostinger Next.js: https://www.hostinger.com/br/web-apps-hosting/nextjs-hosting
+- Hostinger domínios: https://www.hostinger.com/br/registro-de-dominio
+- HostGator: https://www.hostgator.com.br/
+- HostGator compatibilidade: https://suporte.hostgator.com.br/hc/pt-br/articles/30811116692115-Quais-s%C3%A3o-as-compatibilidades-da-HostGator
+- HostGator VPS: https://www.hostgator.com.br/servidor-vps
+- Vercel: https://vercel.com/pricing
+- Abacate Pay: https://www.abacatepay.com/pricing
+- Mercado Pago Checkout: https://www.mercadopago.com.br/ferramentas-para-vender/check-out
+- Stripe: https://stripe.com/br/pricing
+
+Observação: os preços são estimativas baseadas nas páginas oficiais consultadas em 23/09/2026 e podem mudar conforme promoções, câmbio, impostos, prazo de contratação e consumo do projeto.

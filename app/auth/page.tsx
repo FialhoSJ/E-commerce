@@ -23,6 +23,20 @@ export default function AuthPage() {
   const changeMode = (next: Mode) => { setMode(next); setError(''); setMessage(''); setResetStep('email'); };
   const submit = async (event: FormEvent) => {
     event.preventDefault(); setError(''); setMessage('');
+    if (mode === 'login') {
+      try {
+        const response = await fetch('/api/auth/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+        const data = await response.json().catch(() => ({}));
+        if (response.ok) {
+          toast.success('Acesso administrativo autorizado.');
+          router.push('/admin');
+          return;
+        }
+        if (adminRedirect) { setError(data.error || 'Nao foi possivel entrar como administrador.'); return; }
+      } catch {
+        if (adminRedirect) { setError('Nao foi possivel conectar ao servidor.'); return; }
+      }
+    }
     if (mode === 'forgot') {
       if (resetStep === 'email') {
         requestPasswordReset(email);
@@ -41,7 +55,7 @@ export default function AuthPage() {
       return;
     }
     if (password.length < 6) { setError('A senha deve ter pelo menos 6 caracteres.'); return; }
-    if (mode === 'login' && (adminRedirect || email.trim().toLowerCase() === 'admin@admin.com')) {
+    if (mode === 'login' && adminRedirect) {
       try {
         const response = await fetch('/api/auth/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
         const data = await response.json();

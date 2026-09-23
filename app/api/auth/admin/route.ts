@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE, createAdminToken, getAdminConfig, isAdminConfigured } from "@/lib/server/admin-auth";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => ({})) as { email?: string; password?: string };
+  const rawBody = await request.json().catch(() => null);
+  const body = rawBody && typeof rawBody === "object" ? rawBody as { email?: string; password?: string } : {};
   const config = getAdminConfig();
   if (!isAdminConfigured()) return NextResponse.json({ error: "Acesso administrativo não configurado no servidor." }, { status: 503 });
   if (body.email?.trim().toLowerCase() !== config.email || body.password !== config.password) return NextResponse.json({ error: "E-mail ou senha administrativa inválidos." }, { status: 401 });
