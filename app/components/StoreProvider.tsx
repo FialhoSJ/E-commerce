@@ -5,7 +5,7 @@ import { ProductReview, ProductType } from '@/lib/types/ProductType';
 
 export type User = { name: string; email: string; isAdmin?: boolean };
 export type CartItem = ProductType & { quantity: number };
-export type Order = { id: string; items: CartItem[]; total: number; subtotal?: number; shipping?: number; date: string; status?: string };
+export type Order = { id: string; items: CartItem[]; total: number; subtotal?: number; shipping?: number; date: string; status?: string; persistence?: 'local' | 'database' };
 
 type StoreContextValue = {
   user: User | null;

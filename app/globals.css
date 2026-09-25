@@ -1,12 +1,37 @@
 @import "tailwindcss";
 
-.auth-input {
-  width: 100%;
-  margin-top: 0.5rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  outline: none;
+:root {
+  --ink: #242622;
+  --paper: #f3f0e8;
+  --cream: #e8e1d4;
+  --orange: #ef6b3b;
+  --orange-dark: #c94924;
+  --olive: #6b7046;
+  --line: #d9d2c5;
 }
 
-.auth-input:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgb(20 184 166 / 0.15); }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+::selection { color: #fff; background: var(--orange); }
+
+.auth-input {
+  width: 100%; margin-top: .5rem; border: 1px solid var(--line); border-radius: .85rem;
+  padding: .85rem 1rem; outline: none; background: #fbfaf6; color: var(--ink); transition: .2s;
+}
+.auth-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgb(239 107 59 / .16); background: white; }
+
+.studio-grid { background-image: linear-gradient(rgb(255 255 255 / .065) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .065) 1px, transparent 1px); background-size: 32px 32px; }
+.hero-object { position: absolute; width: min(74%, 440px); aspect-ratio: 1; border: 1px solid rgb(255 255 255 / .2); border-radius: 50%; display: grid; place-items: center; transform: rotate(-15deg); }
+.hero-object::before, .hero-object::after { content: ""; position: absolute; border: 1px solid rgb(255 255 255 / .22); border-radius: 50%; }
+.hero-object::before { inset: 9%; }
+.hero-object::after { inset: 19%; }
+.hero-sculpture { position: relative; z-index: 1; width: 43%; aspect-ratio: .82; border-radius: 42% 42% 18% 18%; background: repeating-linear-gradient(0deg, #f07a46 0 5px, #d95c31 5px 8px); box-shadow: 20px 28px 0 #a9442d, 32px 34px 40px rgb(0 0 0 / .3); transform: rotate(15deg); }
+.hero-sculpture::before { content: ""; position: absolute; left: 17%; right: 17%; top: -10%; height: 23%; border-radius: 50%; background: repeating-linear-gradient(0deg, #f39868 0 4px, #d95c31 4px 7px); border: 1px solid rgb(255 255 255 / .22); }
+.hero-sculpture::after { content: ""; position: absolute; left: 25%; right: 25%; bottom: 13%; height: 20%; border: 2px solid rgb(255 223 191 / .45); border-radius: 50%; }
+.spec-line { height: 1px; background: currentColor; opacity: .22; }
+.product-card-image { background: radial-gradient(ellipse at 50% 78%, #ded7ca 0, #eae5db 45%, #f5f2eb 75%); }
+.product-card-image::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .36; background-image: linear-gradient(rgb(95 79 58 / .05) 1px, transparent 1px); background-size: 100% 9px; }
+@keyframes ticker { to { transform: translateX(-35%); } }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

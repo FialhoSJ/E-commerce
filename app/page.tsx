@@ -1,149 +1,70 @@
 import Link from 'next/link';
 
-const highlights = [
-  { number: '01', title: 'Precisão em cada camada', text: 'Impressão com tolerância de até 0,1 mm para peças que encaixam perfeitamente.' },
-  { number: '02', title: 'Materiais que duram', text: 'PLA, PETG, ABS, TPU e resina selecionados para resistência e acabamento impecável.' },
-  { number: '03', title: 'Do arquivo ao objeto', text: 'Envie seu modelo 3D ou escolha na loja: imprimimos e entregamos onde estiver.' },
+const craft = [
+  { n: '01', title: 'Design com propósito', text: 'Objetos pensados para o cotidiano, com forma, função e personalidade.' },
+  { n: '02', title: 'Produção consciente', text: 'Cada peça ganha vida sob demanda, camada por camada, sem excesso.' },
+  { n: '03', title: 'Feito para você', text: 'Cores, medidas e ideias especiais também cabem no nosso ateliê.' },
 ];
 
 export default function Home() {
-  return <div className="bg-[#f8faf9] text-slate-950">
-    <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-24 pt-20 lg:grid-cols-[1.05fr_.95fr] lg:px-10 lg:pt-28">
-      <div>
-        <div className="inline-flex items-center gap-2 rounded-full bg-teal-100/70 px-3.5 py-1 text-xs font-semibold text-teal-800 mb-6">
-          <span className="h-2 w-2 rounded-full bg-teal-600 animate-pulse" /> Impressão 3D sob medida
+  return <div className="overflow-hidden bg-[#f3f0e8] text-[#242622]">
+    <section className="mx-auto grid max-w-[1440px] items-center gap-12 px-6 pb-16 pt-12 sm:px-10 lg:min-h-[680px] lg:grid-cols-[1fr_.9fr] lg:px-16 lg:py-16">
+      <div className="relative z-10">
+        <p className="mb-7 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.24em] text-[#777568]"><span className="h-px w-9 bg-[#ef6b3b]" /> Estúdio de impressão 3D · Brasil</p>
+        <h1 className="max-w-[760px] font-serif text-[clamp(3.7rem,8vw,7.5rem)] leading-[.88] tracking-[-.065em]">Feito em<br /><span className="italic text-[#ef6b3b]">camadas.</span><br />Pensado pra vida.</h1>
+        <p className="mt-8 max-w-lg text-base leading-7 text-[#66675d] sm:text-lg">Objetos com textura, forma e função. Criamos e imprimimos peças em 3D para deixar o dia a dia mais interessante.</p>
+        <div className="mt-9 flex flex-wrap items-center gap-4">
+          <Link href="/loja" className="group inline-flex items-center gap-8 rounded-full bg-[#242622] px-7 py-4 text-sm font-bold text-white transition hover:bg-[#ef6b3b]">Explorar a loja <span className="text-lg transition group-hover:translate-x-1">↗</span></Link>
+          <a href="#estudio" className="px-3 py-3 text-sm font-bold text-[#55564f] underline decoration-[#b7b1a4] underline-offset-4 hover:text-[#ef6b3b]">Conheça o estúdio</a>
         </div>
-        <p className="mb-4 text-sm font-bold uppercase tracking-[0.22em] text-teal-700">Impressão 3D e produtos personalizados</p>
-        <h1 className="max-w-3xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">Suas ideias viram objetos reais.</h1>
-        <p className="mt-7 max-w-xl text-lg leading-8 text-slate-600">Imprimimos peças decorativas, funcionais e protótipos em 3D com precisão milimétrica, acabamento profissional e entrega para todo o Brasil.</p>
-        <div className="mt-9 flex flex-wrap gap-4">
-          <Link href="/loja" className="rounded-full bg-slate-950 px-7 py-4 font-semibold text-white transition hover:bg-teal-700 shadow-lg shadow-slate-950/10">Conheça a loja <span className="ml-2">↗</span></Link>
-          <a href="#sobre" className="rounded-full border border-slate-300 bg-white px-7 py-4 font-semibold text-slate-700 transition hover:border-slate-950 hover:bg-slate-50">Sobre a empresa</a>
-        </div>
-        <div className="mt-12 flex items-center gap-8 border-t border-slate-200/80 pt-8">
-          <div><p className="text-2xl font-bold text-slate-950">+1.500</p><p className="text-sm text-slate-500">Peças impressas</p></div>
-          <div className="h-8 w-px bg-slate-200" />
-          <div><p className="text-2xl font-bold text-slate-950">6</p><p className="text-sm text-slate-500">Tipos de material</p></div>
-          <div className="h-8 w-px bg-slate-200" />
-          <div><p className="text-2xl font-bold text-slate-950">0,1mm</p><p className="text-sm text-slate-500">De precisão</p></div>
+        <div className="mt-14 grid max-w-lg grid-cols-3 border-t border-[#d9d2c5] pt-5">
+          <div><strong className="font-serif text-2xl">FDM</strong><p className="mt-1 text-xs text-[#777568]">Impressão precisa</p></div>
+          <div className="border-l border-[#d9d2c5] pl-5"><strong className="font-serif text-2xl">Sob</strong><p className="mt-1 text-xs text-[#777568]">demanda</p></div>
+          <div className="border-l border-[#d9d2c5] pl-5"><strong className="font-serif text-2xl">BR</strong><p className="mt-1 text-xs text-[#777568]">Enviamos ao Brasil</p></div>
         </div>
       </div>
-      <div className="relative min-h-[420px] overflow-hidden rounded-[2.55rem] bg-slate-900 p-8 text-white shadow-2xl sm:min-h-[520px]">
-        <div className="absolute -right-16 -top-20 h-72 w-72 rounded-full bg-teal-500/30 blur-3xl" />
-        <div className="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-amber-200/20 blur-3xl" />
-        <div className="relative flex h-full flex-col justify-between">
-          <div className="flex items-center justify-between"><span className="text-sm font-medium text-white/70 tracking-widest">FAB. 3D</span><span className="rounded-full bg-white/10 px-3 py-1 text-xs text-teal-300 font-medium">Sob demanda</span></div>
-          <div><p className="max-w-xs text-4xl font-medium leading-tight">Do digital<br /><span className="text-teal-300">ao físico.</span></p><div className="mt-8 flex items-center gap-3 text-sm text-white/70"><span className="h-px w-12 bg-teal-400" />Camada por camada, com precisão total.</div></div>
+
+      <div className="relative mx-auto flex aspect-[.92] w-full max-w-[600px] items-center justify-center overflow-hidden rounded-[2rem] bg-[#30332f] text-white shadow-[0_30px_80px_-35px_rgba(33,35,30,.5)] sm:rounded-[2.5rem]">
+        <div className="studio-grid absolute inset-0 opacity-80" />
+        <div className="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-[#ef6b3b]/25 blur-3xl" />
+        <div className="absolute bottom-[-15%] left-[-12%] h-72 w-72 rounded-full bg-[#a4a27b]/20 blur-3xl" />
+        <div className="hero-object"><div className="hero-sculpture" /></div>
+        <div className="absolute left-7 top-7 z-10 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-white/70 sm:left-10 sm:top-10"><span className="h-2 w-2 rounded-full bg-[#ef6b3b]" /> Peça em produção</div>
+        <div className="absolute bottom-7 left-7 right-7 z-10 flex items-end justify-between sm:bottom-10 sm:left-10 sm:right-10">
+          <div><p className="text-[10px] uppercase tracking-[.22em] text-white/55">Estudo nº 024</p><p className="mt-2 font-serif text-2xl sm:text-3xl">Forma em movimento</p></div>
+          <span className="grid h-11 w-11 place-items-center rounded-full border border-white/30 text-lg">↗</span>
+        </div>
+        <span className="absolute right-8 top-1/2 z-10 hidden -rotate-90 text-[9px] tracking-[.3em] text-white/45 sm:block">PLA · CAMADA 0.2 MM · 38 MIN</span>
+      </div>
+    </section>
+
+    <div className="overflow-hidden border-y border-[#242622] bg-[#ef6b3b] py-4 text-[#242622]">
+      <div className="flex min-w-max animate-[ticker_28s_linear_infinite] items-center gap-8 px-5 font-serif text-xl italic sm:text-2xl">Design autoral <span>✳</span> Impressão 3D <span>✳</span> Objetos para morar <span>✳</span> Feito em camadas <span>✳</span> Design autoral <span>✳</span> Impressão 3D <span>✳</span> Objetos para morar <span>✳</span> Feito em camadas <span>✳</span></div>
+    </div>
+
+    <section id="estudio" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-20 sm:px-10 lg:grid-cols-[.8fr_1.2fr] lg:px-16 lg:py-28">
+      <div><p className="text-[11px] font-bold uppercase tracking-[.24em] text-[#ef6b3b]">Nosso jeito de fazer</p><h2 className="mt-5 max-w-md font-serif text-4xl leading-[1.02] tracking-[-.04em] sm:text-5xl">Uma ideia de cada vez. Uma camada de cada vez.</h2><p className="mt-6 max-w-md leading-7 text-[#66675d]">LACIS é um estúdio independente que explora a impressão 3D como ferramenta de design. Experimentamos formas e materiais para criar objetos que merecem ficar à vista.</p><Link href="/loja" className="mt-7 inline-flex items-center gap-3 text-sm font-bold text-[#242622] hover:text-[#ef6b3b]">Feito aqui, para sua casa <span>↗</span></Link></div>
+      <div className="grid gap-4 sm:grid-cols-3">{craft.map((item) => <article key={item.n} className="relative flex min-h-52 flex-col justify-between border-t border-[#bcb5a8] py-5 sm:min-h-64"><span className="font-serif text-4xl italic text-[#ef6b3b]">{item.n}</span><div><h3 className="font-serif text-xl">{item.title}</h3><p className="mt-3 text-sm leading-6 text-[#777568]">{item.text}</p></div></article>)}</div>
+    </section>
+
+    <section className="bg-[#e8e1d4] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div className="mx-auto max-w-[1312px]">
+        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><div><p className="text-[11px] font-bold uppercase tracking-[.24em] text-[#ef6b3b]">Escolha seu próximo favorito</p><h2 className="mt-4 font-serif text-4xl tracking-[-.04em] sm:text-5xl">Pequenas formas,<br className="hidden sm:block" /> grandes presenças.</h2></div><Link href="/loja" className="group inline-flex items-center gap-3 self-start rounded-full border border-[#242622]/30 px-5 py-3 text-sm font-bold transition hover:bg-[#242622] hover:text-white sm:self-auto">Ver todos os objetos <span className="transition group-hover:translate-x-1">↗</span></Link></div>
+        <div className="mt-12 grid gap-5 sm:grid-cols-3">
+          <Link href="/loja" className="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-2xl bg-[#9b9a79] p-7 text-white sm:min-h-[390px]"><span className="relative z-10 text-[10px] font-bold uppercase tracking-[.2em]">01 / Casa</span><div className="absolute right-8 top-16 h-44 w-36 rotate-[-12deg] rounded-[45%_45%_12%_12%] border-[14px] border-[#d1c4a7] bg-[#e1d4b9] shadow-[18px_20px_0_#747452] transition duration-500 group-hover:rotate-[-5deg] group-hover:scale-105"><div className="absolute inset-x-4 top-5 h-4 rounded-full border border-[#a89b80]" /></div><div className="relative z-10"><h3 className="font-serif text-3xl">Design & decoração</h3><p className="mt-2 text-sm text-white/75">Peças que mudam o ambiente.</p></div><span className="absolute bottom-7 right-7 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/50 transition group-hover:bg-white group-hover:text-[#242622]">↗</span></Link>
+          <Link href="/loja" className="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-2xl bg-[#b86947] p-7 text-white sm:min-h-[390px]"><span className="relative z-10 text-[10px] font-bold uppercase tracking-[.2em]">02 / Rotina</span><div className="absolute right-10 top-16 h-40 w-40 rounded-[38%] border-[15px] border-[#e89a70] bg-[#dc8059] shadow-[16px_18px_0_#944a38] transition duration-500 group-hover:rotate-12 group-hover:scale-105"><div className="absolute inset-7 rounded-[35%] border border-[#ffbd91]" /></div><div className="relative z-10"><h3 className="font-serif text-3xl">Acessórios úteis</h3><p className="mt-2 text-sm text-white/75">Detalhes que facilitam o dia.</p></div><span className="absolute bottom-7 right-7 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/50 transition group-hover:bg-white group-hover:text-[#242622]">↗</span></Link>
+          <Link href="/loja" className="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-2xl bg-[#353a35] p-7 text-white sm:min-h-[390px]"><span className="relative z-10 text-[10px] font-bold uppercase tracking-[.2em]">03 / Sob medida</span><div className="absolute right-10 top-16 h-40 w-40 rotate-45 border-[14px] border-[#d6a579] bg-[#ef6b3b] shadow-[16px_18px_0_#964b32] transition duration-500 group-hover:rotate-[58deg] group-hover:scale-105"><div className="absolute inset-5 border border-[#ffd0a4]" /></div><div className="relative z-10"><h3 className="font-serif text-3xl">Ideias personalizadas</h3><p className="mt-2 text-sm text-white/65">Sua ideia também pode ganhar forma.</p></div><span className="absolute bottom-7 right-7 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/50 transition group-hover:bg-white group-hover:text-[#242622]">↗</span></Link>
         </div>
       </div>
     </section>
 
-    <section id="sobre" className="border-y border-slate-200 bg-white">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-24 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal-700">O nosso jeito</p>
-          <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight sm:text-4xl">A qualidade está em cada camada.</h2>
-          <p className="mt-4 text-slate-600 leading-relaxed">Unimos tecnologia de impressão 3D FDM e resina com design e engenharia para entregar peças resistentes, funcionais e com acabamento de primeiro nível.</p>
-        </div>
-        <div className="grid gap-8 sm:grid-cols-3">
-          {highlights.map((item) => <div key={item.number} className="rounded-2xl bg-slate-50 p-6 border border-slate-100 transition hover:border-slate-200 hover:shadow-sm"><span className="text-sm font-bold text-teal-600">{item.number}</span><h3 className="mt-4 font-semibold text-slate-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p></div>)}
-        </div>
-      </div>
+    <section className="mx-auto grid max-w-[1440px] gap-12 px-6 py-20 sm:px-10 lg:grid-cols-[.7fr_1.3fr] lg:px-16 lg:py-28">
+      <div><p className="text-[11px] font-bold uppercase tracking-[.24em] text-[#ef6b3b]">Do nosso ateliê</p><h2 className="mt-4 font-serif text-4xl tracking-[-.04em] sm:text-5xl">Do arquivo ao objeto.</h2><p className="mt-5 max-w-sm leading-7 text-[#66675d]">Prototipagem, reposição ou aquele projeto que ainda não existe pronto. A gente conversa, desenha e produz.</p><Link href="/loja" className="mt-7 inline-flex rounded-full bg-[#ef6b3b] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#c94924]">Começar um projeto ↗</Link></div>
+      <div className="grid grid-cols-2 gap-3 sm:gap-5"><div className="flex min-h-52 flex-col justify-between rounded-2xl bg-[#dad3c6] p-5 sm:min-h-64 sm:p-7"><span className="font-serif text-5xl text-[#ef6b3b]">01</span><div><h3 className="font-serif text-xl">Você imagina</h3><p className="mt-2 text-sm leading-6 text-[#777568]">Traz sua ideia, referência ou arquivo 3D.</p></div></div><div className="mt-8 flex min-h-52 flex-col justify-between rounded-2xl bg-[#242622] p-5 text-white sm:mt-12 sm:min-h-64 sm:p-7"><span className="font-serif text-5xl text-[#ef6b3b]">02</span><div><h3 className="font-serif text-xl">A gente cria</h3><p className="mt-2 text-sm leading-6 text-white/60">Ajustamos o desenho e escolhemos o material.</p></div></div><div className="-mt-8 flex min-h-52 flex-col justify-between rounded-2xl bg-[#ef6b3b] p-5 sm:-mt-12 sm:min-h-64 sm:p-7"><span className="font-serif text-5xl">03</span><div><h3 className="font-serif text-xl">Imprimimos</h3><p className="mt-2 text-sm leading-6 text-[#512b20]/75">Camada por camada, com atenção ao detalhe.</p></div></div><div className="flex min-h-52 flex-col justify-between rounded-2xl bg-[#d5d5bc] p-5 sm:min-h-64 sm:p-7"><span className="font-serif text-5xl text-[#6b7046]">04</span><div><h3 className="font-serif text-xl">Chega até você</h3><p className="mt-2 text-sm leading-6 text-[#777568]">Peça pronta, embalada e enviada com cuidado.</p></div></div></div>
     </section>
 
-    <section className="mx-auto max-w-7xl px-6 py-24 lg:px-10">
-      <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal-700">Nossa seleção</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Descubra o catálogo 3D</h2>
-        </div>
-        <Link href="/loja" className="group inline-flex items-center gap-2 font-semibold text-teal-700 hover:text-teal-900">Ver todos os produtos <span className="transition group-hover:translate-x-1">→</span></Link>
-      </div>
-      <div className="mt-10 grid gap-6 sm:grid-cols-3">
-        <Link href="/loja" className="group relative overflow-hidden rounded-3xl bg-[#dceeea] p-8 transition hover:shadow-lg"><p className="text-sm font-medium text-teal-800">Decoração</p><h3 className="mt-20 text-2xl font-semibold text-slate-900">Objetos impressos que impressionam.</h3><div className="mt-8 inline-flex items-center text-sm font-semibold text-teal-900">Explorar categoria <span className="ml-1 transition group-hover:translate-x-1">→</span></div></Link>
-        <Link href="/loja" className="group relative overflow-hidden rounded-3xl bg-[#f0e9da] p-8 transition hover:shadow-lg"><p className="text-sm font-medium text-amber-900">Peças funcionais</p><h3 className="mt-20 text-2xl font-semibold text-slate-900">Reposição e utilidade.</h3><div className="mt-8 inline-flex items-center text-sm font-semibold text-amber-950">Explorar categoria <span className="ml-1 transition group-hover:translate-x-1">→</span></div></Link>
-        <Link href="/loja" className="group relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-white transition hover:shadow-lg"><p className="text-sm font-medium text-teal-300">Prototipagem</p><h3 className="mt-20 text-2xl font-semibold text-white">Do projeto ao produto.</h3><div className="mt-8 inline-flex items-center text-sm font-semibold text-teal-300">Explorar categoria <span className="ml-1 transition group-hover:translate-x-1">→</span></div></Link>
-      </div>
-    </section>
+    <section className="bg-[#242622] px-6 py-16 text-white sm:px-10 lg:px-16 lg:py-20"><div className="mx-auto flex max-w-[1312px] flex-col justify-between gap-8 sm:flex-row sm:items-center"><div><p className="text-[11px] font-bold uppercase tracking-[.24em] text-[#ef6b3b]">Feito para durar e despertar curiosidade</p><h2 className="mt-4 max-w-2xl font-serif text-4xl leading-tight tracking-[-.04em] sm:text-5xl">Não é só impressão. É a próxima peça da sua história.</h2></div><Link href="/loja" className="inline-flex shrink-0 items-center justify-center gap-6 rounded-full bg-[#ef6b3b] px-7 py-4 text-sm font-bold transition hover:bg-white hover:text-[#242622]">Encontrar meu objeto <span>↗</span></Link></div></section>
 
-    {/* Seção de Depoimentos / Avaliações */}
-    <section className="border-t border-slate-200 bg-white py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal-700">Depoimentos</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">O que dizem nossos clientes</h2>
-          <p className="mt-4 text-slate-600">Histórias reais de quem transformou ideias em objetos com a 3D Store.</p>
-        </div>
-        <div className="mt-16 grid gap-8 sm:grid-cols-3">
-          <div className="rounded-3xl bg-[#f8faf9] p-8 border border-slate-200/60 relative">
-            <div className="flex text-amber-400 mb-4 text-sm">★★★★★</div>
-            <p className="text-slate-700 text-sm leading-relaxed">&ldquo;Precisava de um protótipo para apresentar a um cliente e a peça saiu perfeita, com encaixes exatos. Impressionante a qualidade da impressão.&rdquo;</p>
-            <div className="mt-6 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-teal-800 text-white flex items-center justify-center font-bold text-sm">MC</div>
-              <div><p className="font-semibold text-sm text-slate-900">Mariana Costa</p><p className="text-xs text-slate-500">Engenheira de Produto</p></div>
-            </div>
-          </div>
-          <div className="rounded-3xl bg-[#f8faf9] p-8 border border-slate-200/60 relative">
-            <div className="flex text-amber-400 mb-4 text-sm">★★★★★</div>
-            <p className="text-slate-700 text-sm leading-relaxed">&ldquo;Consegui uma peça de reposição que já estava descontinuada pelo fabricante. Imprimiram em PETG e ficou mais resistente que a original.&rdquo;</p>
-            <div className="mt-6 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm">RS</div>
-              <div><p className="font-semibold text-sm text-slate-900">Rafael Souza</p><p className="text-xs text-slate-500">Técnico em Mecânica</p></div>
-            </div>
-          </div>
-          <div className="rounded-3xl bg-[#f8faf9] p-8 border border-slate-200/60 relative">
-            <div className="flex text-amber-400 mb-4 text-sm">★★★★★</div>
-            <p className="text-slate-700 text-sm leading-relaxed">&ldquo;Encomendei um presente personalizado com o nome gravado. O acabamento em resina ficou impecável e a entrega foi rapidíssima.&rdquo;</p>
-            <div className="mt-6 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-sm">CL</div>
-              <div><p className="font-semibold text-sm text-slate-900">Camila Lima</p><p className="text-xs text-slate-500">Designer</p></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    {/* Seção FAQ */}
-    <section className="bg-slate-50 py-24 border-t border-slate-200">
-      <div className="mx-auto max-w-4xl px-6 lg:px-10">
-        <div className="text-center mb-16">
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal-700">Dúvidas Frequentes</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Perguntas comuns</h2>
-        </div>
-        <div className="grid gap-6">
-          <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-sm">
-            <h3 className="font-semibold text-slate-900 text-lg">Quais materiais vocês utilizam na impressão 3D?</h3>
-            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Trabalhamos com PLA, PETG, ABS, TPU e resina. Cada material tem suas vantagens: o PLA é ideal para decoração, o PETG e o ABS para peças funcionais, o TPU para itens flexíveis e a resina para detalhes ultrafinos.</p>
-          </div>
-          <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-sm">
-            <h3 className="font-semibold text-slate-900 text-lg">Como faço um pedido personalizado?</h3>
-            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Basta enviar seu arquivo 3D nos formatos STL, OBJ ou 3MF pelo nosso atendimento. Analisamos o modelo, calculamos o material e o tempo de impressão, e enviamos uma cotação antes de produzir.</p>
-          </div>
-          <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-sm">
-            <h3 className="font-semibold text-slate-900 text-lg">Qual o prazo de produção e entrega?</h3>
-            <p className="mt-2 text-sm text-slate-600 leading-relaxed">A produção leva de 3 a 7 dias úteis, dependendo da complexidade e do tamanho da peça. O prazo e o valor do frete são calculados automaticamente no carrinho com base no seu CEP.</p>
-          </div>
-          <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-sm">
-            <h3 className="font-semibold text-slate-900 text-lg">As peças impressas são resistentes?</h3>
-            <p className="mt-2 text-sm text-slate-600 leading-relaxed">Sim! Escolhemos o material ideal para cada aplicação. Peças em PETG e ABS suportam esforço mecânico e altas temperaturas, e todas as impressões passam por controle de qualidade antes do envio.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-10">
-        <div>
-          <span className="font-bold text-slate-900 text-base">3D Store</span>
-          <p className="mt-1 text-slate-400">Impressão 3D, prototipagem e personalização sob medida.</p>
-        </div>
-        <div className="flex flex-wrap gap-6 font-medium text-slate-600">
-          <Link href="/loja" className="hover:text-slate-950">Loja</Link>
-          <Link href="/#sobre" className="hover:text-slate-950">Sobre</Link>
-          <Link href="/auth" className="hover:text-slate-950">Minha Conta</Link>
-        </div>
-        <span>© 2026 3D Store. Todos os direitos reservados.</span>
-      </div>
-    </footer>
+    <footer className="bg-[#e8e1d4] px-6 py-10 sm:px-10 lg:px-16"><div className="mx-auto flex max-w-[1312px] flex-col gap-8 border-t border-[#c8c0b2] pt-8 sm:flex-row sm:items-end sm:justify-between"><div><Link href="/" className="font-black tracking-[.18em]">LACIS<span className="text-[#ef6b3b]">.</span></Link><p className="mt-2 text-sm text-[#777568]">Objetos feitos em camadas, em São Paulo.</p></div><div className="flex gap-6 text-sm font-semibold"><Link href="/loja" className="hover:text-[#ef6b3b]">Loja</Link><Link href="/#estudio" className="hover:text-[#ef6b3b]">Estúdio</Link><Link href="/auth" className="hover:text-[#ef6b3b]">Minha conta</Link></div><span className="text-xs text-[#777568]">© 2026 LACIS Studio</span></div></footer>
   </div>;
 }

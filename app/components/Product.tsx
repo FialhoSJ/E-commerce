@@ -37,43 +37,44 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
       <motion.div
         ref={ref}
         className={cn(
-          'group relative flex h-full w-full flex-col items-center justify-start overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center text-slate-950 shadow-sm transition-all duration-300 ease-in-out hover:shadow-md',
+          'group relative flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-[1.35rem] border border-[#d9d2c5] bg-[#f8f6f0] p-3 text-left text-[#242622] shadow-sm transition-all duration-300 ease-in-out hover:border-[#b9ad9e] hover:shadow-[0_18px_40px_-24px_rgba(36,38,34,.45)]',
           className,
         )}
         whileHover={{ y: -5 }}
         transition={{ type: 'spring', stiffness: 300 }}
         {...props}
       >
-        <div className="relative mb-5 flex h-44 w-full items-center justify-center rounded-2xl bg-slate-50 p-4">
+        <div className="product-card-image relative mb-4 flex h-52 w-full items-center justify-center overflow-hidden rounded-[1rem] p-4">
           <Image
             src={imageUrl}
             unoptimized
             alt={name}
             fill
             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
-            className="object-contain p-5 transition-transform duration-300 group-hover:scale-105"
+            className="z-[1] object-contain p-5 transition-transform duration-500 group-hover:scale-110"
           />
         </div>
 
-        <div className="flex w-full flex-grow flex-col items-center gap-2">
-          <h3 className="line-clamp-2 min-h-12 font-semibold capitalize">{name}</h3>
-          <p className="line-clamp-2 text-sm text-slate-500">{tagline}</p>
+        <div className="flex w-full flex-grow flex-col items-start gap-2 px-2">
+          <p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#ef6b3b]">LACIS / FEITO EM 3D</p>
+          <h3 className="line-clamp-2 min-h-7 font-serif text-xl capitalize">{name}</h3>
+          <p className="line-clamp-2 text-sm text-[#777568]">{tagline}</p>
         </div>
 
-        <div className="mt-5 flex w-full flex-col items-center gap-3">
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold">{formatPrice(price)}</span>
-            {isCouponPrice && <span className="text-xs font-medium text-teal-700">Preço com cupom</span>}
+        <div className="mt-5 flex w-full flex-col items-stretch gap-3 px-2 pb-2">
+          <div className="flex items-end justify-between gap-2">
+            <span className="font-serif text-2xl">{formatPrice(price)}</span>
+            {isCouponPrice && <span className="text-xs font-medium text-[#6b7046]">Preço com cupom</span>}
           </div>
-          <div className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
-            {originalPrice !== undefined && <span className="text-slate-400 line-through">{formatPrice(originalPrice)}</span>}
-            <span className="font-semibold text-amber-600">{offerText}</span>
+          <div className="flex items-center gap-2 text-[11px] text-[#777568]">
+            {originalPrice !== undefined && <span className="line-through">{formatPrice(originalPrice)}</span>}
+            <span className="font-semibold text-[#6b7046]">{offerText}</span>
           </div>
           <div className="grid w-full gap-2 sm:grid-cols-2">
-            {onAddToCart && <button onClick={onAddToCart} className="rounded-full border border-slate-300 px-3 py-2.5 text-xs font-semibold text-slate-800 transition hover:border-teal-600 hover:text-teal-700">Adicionar ao carrinho</button>}
-            {onBuyNow && <button onClick={onBuyNow} className="rounded-full bg-teal-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-teal-500">Comprar agora</button>}
+            {onAddToCart && <button onClick={onAddToCart} className="rounded-full border border-[#d9d2c5] px-3 py-2.5 text-xs font-bold text-[#242622] transition hover:border-[#ef6b3b] hover:text-[#c94924]">Adicionar</button>}
+            {onBuyNow && <button onClick={onBuyNow} className="rounded-full bg-[#242622] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#ef6b3b]">Comprar ↗</button>}
           </div>
-          {href && <Link href={href} className="mt-1 text-sm font-semibold text-slate-600 transition hover:text-teal-700">Ver detalhes →</Link>}
+          {href && <Link href={href} className="mt-1 text-xs font-bold text-[#777568] transition hover:text-[#ef6b3b]">Ver detalhes ↗</Link>}
         </div>
       </motion.div>
     );

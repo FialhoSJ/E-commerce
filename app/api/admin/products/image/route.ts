@@ -38,9 +38,28 @@ export async function POST(request: Request) {
       },
       body: await file.arrayBuffer(),
     });
-    if (!response.ok) return Response.json({ error: 'Não foi possível enviar a imagem. Verifique o bucket público do Storage.' }, { status: 502 });
+    if (!response.ok) {
+      const responseBody = await response.text().catch(() => '');
+      let storageMessage = '';
+      try {
+        const details = JSON.parse(responseBody) as { message?: unknown; error?: unknown };
+        storageMessage = typeof details.message === 'string'
+          ? details.message
+          : typeof details.error === 'string' ? details.error : '';
+      } catch {
+        storageMessage = responseBody;
+      }
+      const detail = storageMessage.replace(/[\r\n\t]+/g, ' ').trim().slice(0, 240);
+      console.error('Supabase Storage upload failed:', response.status, detail);
+      return Response.json({
+        error: detail
+          ? `O Supabase Storage recusou a imagem (${response.status}): ${detail}`
+          : `O Supabase Storage recusou a imagem (${response.status}). Confira se o bucket público "${bucket}" existe.`,
+      }, { status: 502 });
+    }
     return Response.json({ url: `${baseUrl}/storage/v1/object/public/${encodeURIComponent(bucket)}/${objectPath}` }, { status: 201 });
-  } catch {
+  } catch (cause) {
+    console.error('Supabase Storage connection failed:', cause);
     return Response.json({ error: 'Não foi possível conectar ao Storage do Supabase.' }, { status: 502 });
   }
 }

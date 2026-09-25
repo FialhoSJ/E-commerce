@@ -30,30 +30,32 @@ export default function ProductDetails({ product }: { product: ProductType }) {
     setRating(5);
   };
 
-  return <main className="mx-auto max-w-6xl px-6 py-14 lg:px-10">
-    <Link href="/loja" className="text-sm font-semibold text-teal-700">← Voltar para a loja</Link>
-    <div className="mt-10 grid gap-12 rounded-[2rem] bg-white p-6 shadow-sm sm:p-10 lg:grid-cols-2">
-      <div className="flex min-h-[420px] items-center justify-center rounded-3xl bg-slate-50 p-10"><Image src={currentProduct.image} alt={currentProduct.title} unoptimized width={480} height={480} className="max-h-[390px] w-full object-contain" priority /></div>
+  return <main className="mx-auto max-w-[1280px] px-6 py-10 text-[#242622] sm:px-10 lg:px-12">
+    <Link href="/loja" className="text-xs font-bold uppercase tracking-[.16em] text-[#777568] transition hover:text-[#ef6b3b]">← Voltar para a loja</Link>
+    <div className="mt-7 grid gap-8 rounded-[2rem] border border-[#d9d2c5] bg-[#f8f6f0] p-4 sm:p-7 lg:grid-cols-[1.1fr_.9fr]">
+      <div className="product-card-image relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[1.5rem] bg-[#e9e4da] p-8 sm:min-h-[540px]"><div className="absolute inset-6 rounded-[50%] border border-[#c8bfae]" /><Image src={currentProduct.image} alt={currentProduct.title} unoptimized width={560} height={560} className="relative z-[1] max-h-[440px] w-full object-contain" priority /></div>
       <div className="flex flex-col justify-center">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-teal-700">{currentProduct.category}</p>
-        <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight">{currentProduct.title}</h1>
-        <p className="mt-5 text-3xl font-semibold text-slate-950">{currentProduct.price?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
-        <p className="mt-6 leading-7 text-slate-600">{currentProduct.description}</p>
+        <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">LACIS / {currentProduct.category}</p>
+        <h1 className="mt-4 font-serif text-4xl leading-[1.02] tracking-[-.04em] sm:text-5xl">{currentProduct.title}</h1>
+        <p className="mt-6 font-serif text-3xl">{currentProduct.price?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
+        <div className="my-6 h-px w-full bg-[#d9d2c5]" />
+        <p className="leading-7 text-[#66675d]">{currentProduct.description}</p>
+        <div className="mt-6 grid grid-cols-2 gap-3 border-y border-[#d9d2c5] py-4 text-xs text-[#777568]"><div><span className="block font-bold uppercase tracking-[.12em] text-[#242622]">Produção</span><span className="mt-1 block">Feito sob demanda</span></div><div><span className="block font-bold uppercase tracking-[.12em] text-[#242622]">Material</span><span className="mt-1 block">Impressão 3D de qualidade</span></div></div>
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
-          <button onClick={add} className={`rounded-full border px-5 py-3 font-semibold transition ${added ? "border-emerald-600 text-emerald-700" : "border-slate-300 text-slate-800 hover:border-teal-600 hover:text-teal-700"}`}>{added ? "✓ Adicionado" : "Adicionar ao carrinho"}</button>
-          <button onClick={buyNow} className="rounded-full bg-teal-600 px-5 py-3 font-semibold text-white transition hover:bg-teal-500">Comprar agora</button>
+          <button onClick={add} className={`rounded-full border px-5 py-3.5 font-bold transition ${added ? "border-[#6b7046] bg-[#e8e9dd] text-[#555a34]" : "border-[#bdb5a8] text-[#242622] hover:border-[#ef6b3b] hover:text-[#c94924]"}`}>{added ? "✓ Adicionado" : "Adicionar ao carrinho"}</button>
+          <button onClick={buyNow} className="rounded-full bg-[#ef6b3b] px-5 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Comprar agora ↗</button>
         </div>
         {added && <Link href="/loja" className="mt-3 text-center text-sm font-semibold text-teal-700">Continuar comprando</Link>}
       </div>
     </div>
 
-    <section className="mt-10 rounded-[2rem] bg-white p-6 shadow-sm sm:p-10">
-      <div className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-6 sm:flex-row sm:items-end">
-        <div><p className="text-sm font-bold uppercase tracking-[0.2em] text-teal-700">Experiência de compra</p><h2 className="mt-2 text-2xl font-bold">Comentários e avaliações</h2></div>
-        <div className="text-left sm:text-right"><p className="text-2xl font-bold text-amber-500">{averageRating ? averageRating.toFixed(1) : "—"} <span className="text-lg">★</span></p><p className="text-sm text-slate-500">{productReviews.length} avaliação(ões)</p></div>
+    <section className="mt-8 rounded-[2rem] border border-[#d9d2c5] bg-[#f8f6f0] p-6 sm:p-10">
+      <div className="flex flex-col justify-between gap-3 border-b border-[#d9d2c5] pb-6 sm:flex-row sm:items-end">
+        <div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#ef6b3b]">Experiência de compra</p><h2 className="mt-2 font-serif text-3xl">Comentários e avaliações</h2></div>
+        <div className="text-left sm:text-right"><p className="font-serif text-2xl text-[#ef6b3b]">{averageRating ? averageRating.toFixed(1) : "—"} <span className="text-lg">★</span></p><p className="text-sm text-[#777568]">{productReviews.length} avaliação(ões)</p></div>
       </div>
       <div className="mt-6 grid gap-8 lg:grid-cols-[.85fr_1.15fr]">
-        <form onSubmit={submitReview} className="rounded-2xl bg-slate-50 p-5">
+        <form onSubmit={submitReview} className="rounded-2xl bg-[#eee9df] p-5">
           <h3 className="font-semibold">Conte o que achou</h3>
           {user ? <>
             <div className="mt-4 flex gap-1" aria-label="Escolha uma nota">{[1, 2, 3, 4, 5].map((value) => <button key={value} type="button" onClick={() => setRating(value)} className={`text-2xl ${value <= rating ? "text-amber-400" : "text-slate-300"}`} aria-label={`${value} estrelas`}>★</button>)}</div>

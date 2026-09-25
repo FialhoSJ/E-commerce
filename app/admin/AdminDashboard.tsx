@@ -15,6 +15,7 @@ type ProductForm = {
 };
 
 type AdminView = 'catalog' | 'fake';
+type ImageMode = 'upload' | 'url';
 
 const emptyForm: ProductForm = {
   title: '',
@@ -43,6 +44,7 @@ export default function AdminDashboard({
   const [search, setSearch] = useState('');
   const [busy, setBusy] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageMode, setImageMode] = useState<ImageMode>('upload');
   const [imagePreview, setImagePreview] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -51,11 +53,13 @@ export default function AdminDashboard({
   const reset = () => {
     setEditingId(null);
     setForm(emptyForm);
+    setImageMode('upload');
     setImagePreview('');
   };
 
   const edit = (product: ProductType) => {
     setEditingId(product.id);
+    setImageMode('url');
     setForm({
       title: product.title,
       category: product.category,
@@ -82,6 +86,7 @@ export default function AdminDashboard({
 
   const loadFakeProduct = (product: ProductType) => {
     setEditingId(null);
+    setImageMode('url');
     setForm({
       title: product.title,
       category: product.category,
@@ -101,6 +106,7 @@ export default function AdminDashboard({
     if (!file) return;
     setError('');
     setNotice('');
+    setField('image', '');
     setImagePreview(URL.createObjectURL(file));
     setUploadingImage(true);
     try {
@@ -134,7 +140,11 @@ export default function AdminDashboard({
       description: form.description.trim(),
       stock: Number(form.stock),
     };
-    if (!product.title || !product.category || !product.image || !Number.isFinite(product.price) || product.price < 0 || !Number.isSafeInteger(product.stock) || product.stock < 0) {
+    if (!product.image) {
+      setError(imageMode === 'upload' ? 'Envie uma imagem do produto.' : 'Informe a URL da imagem.');
+      return;
+    }
+    if (!product.title || !product.category || !Number.isFinite(product.price) || product.price < 0 || !Number.isSafeInteger(product.stock) || product.stock < 0) {
       setError('Preencha os campos com valores válidos.');
       return;
     }
@@ -232,7 +242,37 @@ export default function AdminDashboard({
               <label className="block text-sm font-semibold">Nome<input required maxLength={160} value={form.title} onChange={(event) => setField('title', event.target.value)} className="auth-input" placeholder="Ex.: Suporte de fone" /></label>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"><label className="block text-sm font-semibold">Categoria<input required maxLength={80} value={form.category} onChange={(event) => setField('category', event.target.value)} className="auth-input" /></label><label className="block text-sm font-semibold">Preço<input required min="0" step="0.01" type="number" value={form.price} onChange={(event) => setField('price', event.target.value)} className="auth-input" placeholder="0,00" /></label></div>
               <label className="block text-sm font-semibold">Estoque<input required min="0" step="1" type="number" value={form.stock} onChange={(event) => setField('stock', event.target.value)} className="auth-input" /></label>
-              <div className="space-y-3"><label className="block text-sm font-semibold">Imagem do produto<input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadImage} className="mt-2 block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:font-semibold file:text-white hover:border-teal-500" /><span className="mt-2 block text-xs font-normal text-slate-500">JPG, PNG ou WEBP · até 5 MB</span></label>{imagePreview && <div className="relative h-36 overflow-hidden rounded-2xl bg-slate-100"><Image src={imagePreview} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}<label className="block text-sm font-semibold">Ou use uma URL<input required type="url" value={form.image} onChange={(event) => setField('image', event.target.value)} className="auth-input" placeholder="https://..." /></label>{uploadingImage && <p className="text-xs font-semibold text-teal-700">Enviando imagem...</p>}</div>
+              <div className="space-y-3">
+                <p className="text-sm font-semibold">Imagem do produto</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button type="button" aria-pressed={imageMode === 'upload'} onClick={() => { setImageMode('upload'); setField('image', ''); setImagePreview(''); }} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${imageMode === 'upload' ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:border-slate-400'}`}>
+                    Enviar arquivo
+                  </button>
+                  <button type="button" aria-pressed={imageMode === 'url'} onClick={() => { setImageMode('url'); setField('image', ''); setImagePreview(''); }} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${imageMode === 'url' ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:border-slate-400'}`}>
+                    Usar URL
+                  </button>
+                </div>
+                {imageMode === 'upload' && (
+                  <div className="space-y-3">
+                    <label className="block text-sm font-medium text-slate-600">
+                      Escolha uma imagem
+                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadImage} className="mt-2 block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:font-semibold file:text-white hover:border-teal-500" />
+                      <span className="mt-2 block text-xs font-normal text-slate-500">JPG, PNG ou WEBP · até 5 MB</span>
+                    </label>
+                    {imagePreview && <div className="relative h-36 overflow-hidden rounded-2xl bg-slate-100"><Image src={imagePreview} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}
+                  </div>
+                )}
+                {imageMode === 'url' && (
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold">
+                      URL da imagem
+                      <input required type="url" value={form.image} onChange={(event) => setField('image', event.target.value)} className="auth-input" placeholder="https://..." />
+                    </label>
+                    {form.image && <div className="relative h-36 overflow-hidden rounded-2xl bg-slate-100"><Image src={form.image} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}
+                  </div>
+                )}
+                {uploadingImage && <p className="text-xs font-semibold text-teal-700">Enviando imagem...</p>}
+              </div>
               <label className="block text-sm font-semibold">Descrição<textarea required maxLength={5000} value={form.description} onChange={(event) => setField('description', event.target.value)} className="auth-input min-h-28" /></label>
               <button className="w-full rounded-xl bg-teal-600 px-4 py-3 font-bold text-white transition hover:bg-teal-500">{busy ? 'Salvando...' : editingId === null ? 'Salvar produto' : 'Salvar alterações'}</button>
             </fieldset>

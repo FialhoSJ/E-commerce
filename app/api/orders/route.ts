@@ -23,7 +23,13 @@ export async function POST(request: NextRequest) {
     if (hasSupabaseConfig()) {
       const profiles = await supabaseRequest<Array<{ id: string }>>(`profiles?select=id&email=eq.${encodeURIComponent(body.email)}`);
       const profile = profiles[0];
-      if (!profile) return Response.json({ error: 'Conta ainda não está vinculada ao banco de dados.' }, { status: 409 });
+      if (!profile) {
+        return Response.json({
+          order,
+          persistence: 'local',
+          message: 'Esta conta existe somente neste navegador. O pedido foi salvo localmente e não aparecerá em outros dispositivos.',
+        }, { status: 201 });
+      }
       const persisted = await supabaseRequest<Array<{ id: string; created_at: string }>>('orders', {
         method: 'POST',
         body: JSON.stringify({ user_id: profile.id, status: 'pending_payment', subtotal_cents: Math.round(subtotal * 100), shipping_cents: Math.round(shipping.price * 100), total_cents: Math.round(total * 100), shipping_method: shipping.name, shipping_estimate_days: shipping.deliveryDays, address_snapshot: address }),
@@ -31,11 +37,11 @@ export async function POST(request: NextRequest) {
       const saved = persisted[0];
       if (!saved) throw new Error('Pedido não foi persistido.');
       await supabaseRequest('order_items', { method: 'POST', body: JSON.stringify(items.map((item) => ({ order_id: saved.id, title_snapshot: item.title, unit_price_cents: Math.round((item.price as number) * 100), quantity: item.quantity }))) });
-      return Response.json({ order: { ...order, id: saved.id, createdAt: saved.created_at }, payment: { status: 'pending', message: 'Pedido persistido. Conecte o gateway para gerar o pagamento.' } }, { status: 201 });
+      return Response.json({ order: { ...order, id: saved.id, createdAt: saved.created_at }, persistence: 'database', payment: { status: 'pending', message: 'Pedido persistido. Conecte o gateway para gerar o pagamento.' } }, { status: 201 });
     }
 
     // Modo development: mantém o fluxo demonstrável sem credenciais externas.
-    return Response.json({ order, payment: { status: 'pending', message: 'Pedido criado. Conecte o gateway de pagamento para gerar o checkout.' } }, { status: 201 });
+    return Response.json({ order, persistence: 'local', payment: { status: 'pending', message: 'Pedido criado somente neste navegador. Conecte uma conta Supabase para persistir o pedido.' } }, { status: 201 });
   } catch {
     return Response.json({ error: 'Não foi possível criar o pedido.' }, { status: 400 });
   }

@@ -32,7 +32,7 @@ export default function Cart() {
   };
 
   return <>
-    <button onClick={() => setOpen(true)} className="relative rounded-full px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-200" aria-label="Abrir carrinho">
+    <button onClick={() => setOpen(true)} className="relative rounded-full px-3 py-2 text-sm font-semibold text-[#242622] transition hover:bg-[#e8e1d4]" aria-label="Abrir carrinho">
       <span className="inline-flex items-center gap-2">
         <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.5L20.5 8H6" />
@@ -40,7 +40,7 @@ export default function Cart() {
           <circle cx="18" cy="20" r="1" />
         </svg>
         <span className="hidden sm:inline">Carrinho</span>
-        {cartCount > 0 && <span className="rounded-full bg-teal-400 px-2 py-0.5 text-xs text-slate-950">{cartCount}</span>}
+        {cartCount > 0 && <span className="rounded-full bg-[#ef6b3b] px-2 py-0.5 text-xs text-white">{cartCount}</span>}
       </span>
     </button>
 
@@ -56,15 +56,15 @@ export default function Cart() {
             transition={{ duration: 0.2 }}
           >
             <motion.aside
-              className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col overflow-hidden bg-white p-6 text-slate-900 shadow-2xl"
+              className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col overflow-hidden bg-[#f8f6f0] p-6 text-[#242622] shadow-2xl"
               onClick={(event) => event.stopPropagation()}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
             >
-              <div className="flex shrink-0 items-center justify-between border-b border-slate-200 pb-5">
-                <h2 className="text-xl font-bold">Seu carrinho</h2>
+              <div className="flex shrink-0 items-center justify-between border-b border-[#d9d2c5] pb-5">
+                <h2 className="font-serif text-2xl">Sua seleção</h2>
                 <button onClick={() => setOpen(false)} className="rounded-full p-2 text-2xl leading-none hover:bg-slate-100" aria-label="Fechar carrinho">×</button>
               </div>
               {cart.length === 0 ? (
@@ -90,7 +90,7 @@ export default function Cart() {
                   </div>
                   <div className="shrink-0 border-t bg-white pt-5">
                     <div className="mb-4 flex justify-between font-bold"><span>Total</span><span>{money(cartTotal)}</span></div>
-                    <button onClick={checkout} className="w-full rounded-xl bg-teal-600 px-4 py-3 font-bold text-white hover:bg-teal-500">Ir para checkout</button>
+                    <button onClick={checkout} className="w-full rounded-full bg-[#ef6b3b] px-4 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Continuar para entrega ↗</button>
                     {!user && <p className="mt-2 text-center text-xs text-slate-500">Você poderá entrar ou criar sua conta no próximo passo.</p>}
                   </div>
                 </>

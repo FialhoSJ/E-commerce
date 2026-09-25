@@ -19,26 +19,28 @@ export default function SuccessPage() {
   if (!user) return null;
 
   return (
-    <main className="mx-auto max-w-3xl py-10 text-slate-900">
-      <Link href="/" className="text-sm text-teal-700">← Voltar ao início</Link>
+    <main className="mx-auto max-w-3xl px-6 py-10 text-[#242622] sm:px-8">
+      <Link href="/" className="text-xs font-bold uppercase tracking-[.16em] text-[#777568] hover:text-[#ef6b3b]">← Voltar ao início</Link>
       <motion.div
-        className="mt-5 rounded-3xl bg-white p-8 shadow-xl"
+        className="mt-5 rounded-[1.8rem] border border-[#d9d2c5] bg-[#f8f6f0] p-7 shadow-[0_24px_70px_-42px_rgba(36,38,34,.55)] sm:p-10"
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <motion.div
-          className="grid h-14 w-14 place-items-center rounded-full bg-emerald-100 text-3xl"
+          className="grid h-14 w-14 place-items-center rounded-full bg-[#e6e6d7] text-3xl text-[#6b7046]"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.2 }}
         >
           ✓
         </motion.div>
-        <p className="mt-4 text-sm font-semibold uppercase tracking-wider text-teal-700">Pedido concluído</p>
-        <h1 className="mt-2 text-3xl font-bold">Obrigado, {user.name.split(' ')[0]}!</h1>
-        <p className="mt-2 text-slate-500">
-          Seu pedido foi registrado com sucesso{lastOrder ? ` com o número ${lastOrder.id}` : ''}.
+        <p className="mt-4 text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">Pedido concluído</p>
+        <h1 className="mt-2 font-serif text-4xl tracking-[-.04em]">Obrigado, {user.name.split(' ')[0]}!</h1>
+        <p className="mt-2 text-[#777568]">
+          {lastOrder?.persistence === 'local'
+            ? 'Este pedido foi salvo somente neste navegador e ainda não está sincronizado com o banco de dados.'
+            : `Seu pedido foi registrado com sucesso${lastOrder ? ` com o número ${lastOrder.id}` : ''}.`}
         </p>
         {lastOrder ? (
           <>
@@ -63,7 +65,7 @@ export default function SuccessPage() {
           </p>
         )}
         <p className="mt-4 text-sm text-teal-700">Você receberá um e‑mail com os detalhes do pedido.</p>
-        <Link href="/loja" className="mt-6 inline-block rounded-xl bg-teal-600 px-4 py-3 font-semibold text-white hover:bg-teal-500">Continuar comprando</Link>
+        <Link href="/loja" className="mt-6 inline-block rounded-full bg-[#ef6b3b] px-6 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Continuar comprando ↗</Link>
       </motion.div>
     </main>
   );

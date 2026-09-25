@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   if (!await getAdminSession()) return Response.json({ error: 'Acesso negado.' }, { status: 401 });
   if (!hasSupabaseConfig()) return Response.json({ error: 'Configure o Supabase no servidor.' }, { status: 503 });
   const product = parseProductInput(await request.json().catch(() => null));
-  if (!product) return Response.json({ error: 'Dados do produto inválidos.' }, { status: 400 });
+  if (!product) return Response.json({ error: 'Dados inválidos. Confira nome, categoria, URL HTTPS da imagem, preço e estoque inteiro (zero ou maior).' }, { status: 400 });
   try {
     const rows = await supabaseRequest<Array<Parameters<typeof mapProductRow>[0]>>(
       `products?select=${productFields}`,
