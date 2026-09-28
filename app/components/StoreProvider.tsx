@@ -24,8 +24,9 @@ type StoreContextValue = {
   addToCart: (product: ProductType) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
+  clearCart: () => void;
   completeOrder: () => Order | null;
-  saveOrder: (order: Order) => void;
+  saveOrder: (order: Order, clearCart?: boolean) => void;
 };
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -156,6 +157,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (quantity < 1) return removeFromCart(productId);
     setCart((items) => items.map((item) => item.id === productId ? { ...item, quantity } : item));
   }, [removeFromCart]);
+  const clearCart = useCallback(() => setCart([]), []);
 
   const completeOrder = useCallback((): Order | null => {
     if (cart.length === 0) return null;
@@ -171,10 +173,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return order;
   }, [cart]);
 
-  const saveOrder = useCallback((order: Order) => {
+  const saveOrder = useCallback((order: Order, clear = true) => {
     localStorage.setItem(ORDER_KEY, JSON.stringify(order));
     setLastOrder(order);
-    setCart([]);
+    if (clear) setCart([]);
   }, []);
 
   const value = useMemo(() => ({
@@ -182,8 +184,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0),
     cartTotal: cart.reduce((total, item) => total + (item.price || 0) * item.quantity, 0),
     lastOrder,
-    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, completeOrder, saveOrder,
-  }), [user, reviews, addReview, cart, lastOrder, removeFromCart, updateQuantity, completeOrder, saveOrder]);
+    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, clearCart, completeOrder, saveOrder,
+  }), [user, reviews, addReview, cart, lastOrder, removeFromCart, updateQuantity, clearCart, completeOrder, saveOrder]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

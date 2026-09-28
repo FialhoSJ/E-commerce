@@ -55,7 +55,8 @@ create type order_status as enum ('pending_payment', 'paid', 'processing', 'ship
 
 create table if not exists orders (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete restrict,
+  user_id uuid references auth.users(id) on delete set null,
+  customer_email text not null,
   status order_status not null default 'pending_payment',
   subtotal_cents integer not null check (subtotal_cents >= 0),
   shipping_cents integer not null default 0 check (shipping_cents >= 0),

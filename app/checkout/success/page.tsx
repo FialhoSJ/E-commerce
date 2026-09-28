@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useStore } from '../../components/StoreProvider';
@@ -10,11 +10,36 @@ const money = (value: number) => value.toLocaleString('pt-BR', { style: 'currenc
 
 export default function SuccessPage() {
   const router = useRouter();
-  const { user, lastOrder } = useStore();
+  const { user, lastOrder, clearCart } = useStore();
+  const [paymentStatus, setPaymentStatus] = useState('pending_payment');
 
   useEffect(() => {
     if (!user) router.replace('/auth?redirect=/checkout/success');
   }, [user, router]);
+
+  useEffect(() => {
+    const orderId = new URLSearchParams(window.location.search).get('orderId');
+    if (!orderId) return;
+    let active = true;
+    let attempts = 0;
+    const refresh = async () => {
+      attempts += 1;
+      try {
+        const response = await fetch(`/api/orders/status?orderId=${encodeURIComponent(orderId)}`, { cache: 'no-store' });
+        if (response.ok) {
+          const data = await response.json();
+          if (active) {
+            setPaymentStatus(data.order.status);
+            if (data.order.status === 'paid') clearCart();
+          }
+          if (data.order.status === 'paid' || data.order.status !== 'pending_payment') return;
+        }
+      } catch { /* Retenta enquanto a confirmação do webhook chega. */ }
+      if (active && attempts < 40) window.setTimeout(refresh, 3000);
+    };
+    void refresh();
+    return () => { active = false; };
+  }, [clearCart]);
 
   if (!user) return null;
 
@@ -35,7 +60,7 @@ export default function SuccessPage() {
         >
           ✓
         </motion.div>
-        <p className="mt-4 text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">Pedido concluído</p>
+        <p className="mt-4 text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">Pedido registrado</p>
         <h1 className="mt-2 text-4xl tracking-[-.04em]">Obrigado, {user.name.split(' ')[0]}!</h1>
         <p className="mt-2 text-[#777568]">
           {lastOrder?.persistence === 'local'
@@ -57,14 +82,13 @@ export default function SuccessPage() {
               <span>{money(lastOrder.total)}</span>
             </div>
             {lastOrder.shipping !== undefined && <div className="mt-3 flex justify-between text-sm text-slate-500"><span>Frete</span><span>{lastOrder.shipping ? money(lastOrder.shipping) : 'Grátis'}</span></div>}
-            {lastOrder.status && <p className="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Status: pagamento pendente. O pedido será atualizado após a confirmação do gateway.</p>}
+            <p className={`mt-5 rounded-xl p-4 text-sm ${paymentStatus === 'paid' ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'}`}>{paymentStatus === 'paid' ? 'Pagamento confirmado. Seu pedido está em processamento.' : 'Aguardando confirmação do pagamento. Esta página será atualizada automaticamente.'}</p>
           </>
         ) : (
           <p className="mt-8 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
             Não encontramos os detalhes deste pedido, mas ele foi registrado com sucesso.
           </p>
         )}
-        <p className="mt-4 text-sm text-teal-700">Você receberá um e‑mail com os detalhes do pedido.</p>
         <Link href="/loja" className="mt-6 inline-block rounded-full bg-[#ef6b3b] px-6 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Continuar comprando ↗</Link>
       </motion.div>
     </main>

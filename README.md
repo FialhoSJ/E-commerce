@@ -41,4 +41,6 @@ O acesso administrativo usa o e-mail definido em `ADMIN_EMAIL` (no exemplo, `adm
 
 O catálogo precisa do Supabase configurado em `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. Em um banco novo, execute `database/schema.sql` no SQL Editor do Supabase. Se a tabela `products` já existir, execute `database/admin_catalog_migration.sql`.
 
+Para habilitar o checkout de teste do AbacatePay, execute também `database/abacatepay_migration.sql` em bancos existentes e configure `ABACATEPAY_API_KEY` no `.env.local` (somente servidor). Configure o webhook `/api/webhooks/abacatepay` no painel AbacatePay com `checkout.completed` e o mesmo `ABACATEPAY_WEBHOOK_SECRET` do servidor. O webhook exige URL HTTPS pública; para desenvolvimento local, use um túnel HTTPS.
+
 Depois de reiniciar a aplicação e entrar com o e-mail e a senha administrativos na tela de login normal, a aba `Admin` aparece na navegação. O painel permite criar, editar e excluir produtos; as alterações são persistidas no Supabase e aparecem na loja.
