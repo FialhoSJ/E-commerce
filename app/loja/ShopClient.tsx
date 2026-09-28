@@ -69,7 +69,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
           <div className="absolute -right-10 -top-28 h-72 w-72 rounded-full border border-white/15 sm:right-20 sm:top-[-13rem] sm:h-[28rem] sm:w-[28rem]" />
           <div>
             <p className="relative text-[10px] font-bold uppercase tracking-[.24em] text-[#f18a5e]">LACIS / Objetos impressos em 3D</p>
-            <h1 className="relative mt-4 font-serif text-4xl tracking-[-.04em] sm:text-6xl">Objetos com outra<br className="hidden sm:block" /> camada de personalidade.</h1>
+            <h1 className="relative mt-4 text-4xl tracking-[-.04em] sm:text-6xl">Objetos com outra<br className="hidden sm:block" /> camada de personalidade.</h1>
             <p className="relative mt-4 max-w-lg text-sm leading-6 text-white/65 sm:text-base">Peças para casa, mesa e rotina. Produzidas em pequenos lotes e com cuidado em cada detalhe.</p>
           </div>
           <div className="relative inline-flex items-center gap-2 self-start rounded-full border border-white/25 bg-white/10 px-4 py-2.5 text-xs font-semibold text-white sm:self-auto">

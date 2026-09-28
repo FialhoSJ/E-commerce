@@ -36,8 +36,8 @@ export default function ProductDetails({ product }: { product: ProductType }) {
       <div className="product-card-image relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[1.5rem] bg-[#e9e4da] p-8 sm:min-h-[540px]"><div className="absolute inset-6 rounded-[50%] border border-[#c8bfae]" /><Image src={currentProduct.image} alt={currentProduct.title} unoptimized width={560} height={560} className="relative z-[1] max-h-[440px] w-full object-contain" priority /></div>
       <div className="flex flex-col justify-center">
         <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">LACIS / {currentProduct.category}</p>
-        <h1 className="mt-4 font-serif text-4xl leading-[1.02] tracking-[-.04em] sm:text-5xl">{currentProduct.title}</h1>
-        <p className="mt-6 font-serif text-3xl">{currentProduct.price?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
+        <h1 className="mt-4 text-4xl leading-[1.02] tracking-[-.04em] sm:text-5xl">{currentProduct.title}</h1>
+        <p className="mt-6 text-3xl">{currentProduct.price?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
         <div className="my-6 h-px w-full bg-[#d9d2c5]" />
         <p className="leading-7 text-[#66675d]">{currentProduct.description}</p>
         <div className="mt-6 grid grid-cols-2 gap-3 border-y border-[#d9d2c5] py-4 text-xs text-[#777568]"><div><span className="block font-bold uppercase tracking-[.12em] text-[#242622]">Produção</span><span className="mt-1 block">Feito sob demanda</span></div><div><span className="block font-bold uppercase tracking-[.12em] text-[#242622]">Material</span><span className="mt-1 block">Impressão 3D de qualidade</span></div></div>
@@ -51,8 +51,8 @@ export default function ProductDetails({ product }: { product: ProductType }) {
 
     <section className="mt-8 rounded-[2rem] border border-[#d9d2c5] bg-[#f8f6f0] p-6 sm:p-10">
       <div className="flex flex-col justify-between gap-3 border-b border-[#d9d2c5] pb-6 sm:flex-row sm:items-end">
-        <div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#ef6b3b]">Experiência de compra</p><h2 className="mt-2 font-serif text-3xl">Comentários e avaliações</h2></div>
-        <div className="text-left sm:text-right"><p className="font-serif text-2xl text-[#ef6b3b]">{averageRating ? averageRating.toFixed(1) : "—"} <span className="text-lg">★</span></p><p className="text-sm text-[#777568]">{productReviews.length} avaliação(ões)</p></div>
+        <div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#ef6b3b]">Experiência de compra</p><h2 className="mt-2 text-3xl">Comentários e avaliações</h2></div>
+        <div className="text-left sm:text-right"><p className="text-2xl text-[#ef6b3b]">{averageRating ? averageRating.toFixed(1) : "—"} <span className="text-lg">★</span></p><p className="text-sm text-[#777568]">{productReviews.length} avaliação(ões)</p></div>
       </div>
       <div className="mt-6 grid gap-8 lg:grid-cols-[.85fr_1.15fr]">
         <form onSubmit={submitReview} className="rounded-2xl bg-[#eee9df] p-5">

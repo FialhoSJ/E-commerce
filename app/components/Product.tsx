@@ -57,13 +57,13 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
 
         <div className="flex w-full flex-grow flex-col items-start gap-2 px-2">
           <p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#ef6b3b]">LACIS / FEITO EM 3D</p>
-          <h3 className="line-clamp-2 min-h-7 font-serif text-xl capitalize">{name}</h3>
+          <h3 className="line-clamp-2 min-h-7 text-xl capitalize">{name}</h3>
           <p className="line-clamp-2 text-sm text-[#777568]">{tagline}</p>
         </div>
 
         <div className="mt-5 flex w-full flex-col items-stretch gap-3 px-2 pb-2">
           <div className="flex items-end justify-between gap-2">
-            <span className="font-serif text-2xl">{formatPrice(price)}</span>
+            <span className="text-2xl">{formatPrice(price)}</span>
             {isCouponPrice && <span className="text-xs font-medium text-[#6b7046]">Preço com cupom</span>}
           </div>
           <div className="flex items-center gap-2 text-[11px] text-[#777568]">

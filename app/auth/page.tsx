@@ -75,7 +75,7 @@ export default function AuthPage() {
     <div className="absolute -right-16 -top-20 h-44 w-44 rounded-full border border-[#ef6b3b]/20" /><div className="absolute -right-9 -top-12 h-28 w-28 rounded-full border border-[#ef6b3b]/20" />
     <Link href="/" className="relative text-xs font-bold uppercase tracking-[.16em] text-[#777568] transition hover:text-[#ef6b3b]">← Voltar para a loja</Link>
     <p className="relative mt-8 text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">LACIS / Conta</p>
-    <h1 className="relative mt-3 font-serif text-4xl tracking-[-.04em]">{mode === 'forgot' ? forgotTitle : mode === 'signup' ? 'Criar sua conta' : 'Entre no estúdio'}</h1>
+    <h1 className="relative mt-3 text-4xl tracking-[-.04em]">{mode === 'forgot' ? forgotTitle : mode === 'signup' ? 'Criar sua conta' : 'Entre no estúdio'}</h1>
     <p className="mt-3 text-sm leading-6 text-[#777568]">{mode === 'forgot' ? resetStep === 'email' ? 'Informe seu e-mail para receber um código de uso único.' : resetStep === 'otp' ? 'O código é válido por 10 minutos. Confira sua caixa de entrada.' : 'Escolha uma senha nova para sua conta.' : 'Entre para acompanhar seu pedido e continuar sua compra.'}</p>
     <form onSubmit={submit} className="mt-6 space-y-4">
       {mode === 'signup' && <label className="block text-sm font-medium">Nome<input required value={name} onChange={(event) => setName(event.target.value)} className="auth-input" placeholder="Seu nome" /></label>}

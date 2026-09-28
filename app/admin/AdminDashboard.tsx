@@ -188,23 +188,23 @@ export default function AdminDashboard({
   };
 
   const productCard = (product: ProductType, fake = false) => (
-    <article key={`${fake ? 'fake' : 'catalog'}-${product.id}`} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <div className="relative h-48 bg-slate-100">
+    <article key={`${fake ? 'fake' : 'catalog'}-${product.id}`} className="group overflow-hidden rounded-2xl border border-[#d9d2c5] bg-[#fbfaf6] shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="product-card-image relative h-48">
         <Image src={product.image} alt={product.title} fill sizes="(max-width: 768px) 100vw, 320px" unoptimized className="object-contain p-6 transition duration-500 group-hover:scale-105" />
-        <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-600 shadow-sm">{product.category}</span>
+        <span className="absolute left-4 top-4 rounded-full bg-[#f3f0e8]/95 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#55564f] shadow-sm">{product.category}</span>
       </div>
       <div className="p-5">
-        <h3 className="min-h-12 font-semibold leading-6 text-slate-950">{product.title}</h3>
+        <h3 className="min-h-12 font-semibold leading-6 text-[#242622]">{product.title}</h3>
         <div className="mt-3 flex items-center justify-between gap-3">
-          <strong className="text-lg text-teal-700">{fake ? `US$ ${product.price?.toFixed(2)}` : money(product.price)}</strong>
-          <span className="text-xs text-slate-500">{fake ? 'referência' : `estoque ${product.stock ?? 0}`}</span>
+          <strong className="text-lg text-[#c94924]">{fake ? `US$ ${product.price?.toFixed(2)}` : money(product.price)}</strong>
+          <span className="text-xs text-[#777568]">{fake ? 'referência' : `estoque ${product.stock ?? 0}`}</span>
         </div>
-        <p className="mt-3 line-clamp-2 min-h-10 text-sm leading-5 text-slate-500">{product.description || 'Sem descrição cadastrada.'}</p>
+        <p className="mt-3 line-clamp-2 min-h-10 text-sm leading-5 text-[#777568]">{product.description || 'Sem descrição cadastrada.'}</p>
         {fake ? (
-          <button type="button" onClick={() => loadFakeProduct(product)} disabled={!databaseReady} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50">Usar no cadastro</button>
+          <button type="button" onClick={() => loadFakeProduct(product)} disabled={!databaseReady} className="mt-5 w-full rounded-full bg-[#242622] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#ef6b3b] disabled:cursor-not-allowed disabled:opacity-50">Usar no cadastro</button>
         ) : (
           <div className="mt-5 grid grid-cols-2 gap-2">
-            <button type="button" disabled={busy || !databaseReady} onClick={() => edit(product)} className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-teal-600 hover:text-teal-700 disabled:opacity-50">Editar</button>
+            <button type="button" disabled={busy || !databaseReady} onClick={() => edit(product)} className="rounded-full border border-[#d9d2c5] px-3 py-2.5 text-sm font-semibold text-[#55564f] transition hover:border-[#ef6b3b] hover:text-[#c94924] disabled:opacity-50">Editar</button>
             <button type="button" disabled={busy || !databaseReady} onClick={() => remove(product)} className="rounded-xl border border-red-200 px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50">Excluir</button>
           </div>
         )}
@@ -213,31 +213,31 @@ export default function AdminDashboard({
   );
 
   return (
-    <main className="min-h-screen bg-[#f6f8f7] px-4 py-6 text-slate-950 sm:px-6 lg:px-10 lg:py-10">
+    <main className="min-h-screen bg-[#f3f0e8] px-4 py-6 text-[#242622] sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-7xl">
-        <header className="overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-8 text-white shadow-xl sm:px-10">
-          <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
+        <header className="studio-grid relative overflow-hidden rounded-[2rem] bg-[#30332f] px-6 py-8 text-white shadow-[0_30px_80px_-35px_rgba(33,35,30,.5)] sm:px-10 sm:py-10"><div className="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-[#ef6b3b]/20 blur-3xl" />
+          <div className="relative flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
             <div>
-              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.24em] text-teal-300"><span className="grid h-8 w-8 place-items-center rounded-xl bg-teal-400 text-slate-950">3D</span> Área administrativa</div>
-              <h1 className="mt-5 max-w-2xl text-3xl font-semibold tracking-tight sm:text-5xl">Organize sua vitrine com clareza.</h1>
-              <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Gerencie produtos publicados e use a Fake Store API como referência visual para novos itens.</p>
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.24em] text-[#f39868]"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#ef6b3b] text-white">3D</span> Área administrativa</div>
+              <h1 className="mt-5 max-w-2xl text-4xl leading-[.98] tracking-[-.04em] sm:text-6xl">Organize sua vitrine com clareza.</h1>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-white/65 sm:text-base">Gerencie produtos publicados e use a Fake Store API como referência visual para novos itens.</p>
             </div>
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-slate-200"><span className={`h-2.5 w-2.5 rounded-full ${databaseReady ? 'bg-emerald-400' : 'bg-amber-400'}`} /> {databaseReady ? 'Supabase conectado' : 'Supabase pendente'}</div>
+            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white/75"><span className={`h-2.5 w-2.5 rounded-full ${databaseReady ? 'bg-emerald-400' : 'bg-amber-400'}`} /> {databaseReady ? 'Supabase conectado' : 'Supabase pendente'}</div>
           </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl bg-white/10 p-4"><p className="text-xs uppercase tracking-wider text-slate-400">Publicados</p><strong className="mt-2 block text-2xl">{catalogProducts.length}</strong></div>
-            <div className="rounded-2xl bg-white/10 p-4"><p className="text-xs uppercase tracking-wider text-slate-400">Referências fake</p><strong className="mt-2 block text-2xl">{fakeProducts.length}</strong></div>
-            <div className="rounded-2xl bg-white/10 p-4"><p className="text-xs uppercase tracking-wider text-slate-400">Acesso</p><strong className="mt-2 block text-2xl">Administrador</strong></div>
+          <div className="relative mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/[.06] p-4"><p className="text-xs uppercase tracking-wider text-white/50">Publicados</p><strong className="mt-2 block text-3xl">{catalogProducts.length}</strong></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[.06] p-4"><p className="text-xs uppercase tracking-wider text-white/50">Referências fake</p><strong className="mt-2 block text-3xl">{fakeProducts.length}</strong></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[.06] p-4"><p className="text-xs uppercase tracking-wider text-white/50">Acesso</p><strong className="mt-2 block text-3xl">Administrador</strong></div>
           </div>
         </header>
 
         {!databaseReady && <p role="alert" className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">A visualização da API fake está disponível, mas salve produtos somente depois de configurar o Supabase no servidor.</p>}
         {error && <p role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700">{error}</p>}
-        {notice && <p role="status" className="mt-6 rounded-2xl border border-teal-200 bg-teal-50 p-4 text-sm leading-6 text-teal-800">{notice}</p>}
+        {notice && <p role="status" className="mt-6 rounded-2xl border border-[#efb9a4] bg-[#fff3ed] p-4 text-sm leading-6 text-[#8e3c25]">{notice}</p>}
 
         <section className="mt-8 grid gap-8 lg:grid-cols-[360px_1fr]">
-          <form onSubmit={submit} className="h-fit rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
-            <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">{editingId === null ? 'Novo item' : 'Edição'}</p><h2 className="mt-2 text-2xl font-bold">{editingId === null ? 'Adicionar produto' : 'Editar produto'}</h2></div>{editingId !== null && <button type="button" onClick={reset} className="text-sm font-semibold text-slate-500 hover:text-slate-950">Cancelar</button>}</div>
+          <form onSubmit={submit} className="h-fit rounded-[2rem] border border-[#d9d2c5] bg-[#fbfaf6] p-6 shadow-sm lg:sticky lg:top-24">
+            <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c94924]">{editingId === null ? 'Novo item' : 'Edição'}</p><h2 className="mt-2 text-2xl font-bold">{editingId === null ? 'Adicionar produto' : 'Editar produto'}</h2></div>{editingId !== null && <button type="button" onClick={reset} className="text-sm font-semibold text-[#777568] hover:text-[#242622]">Cancelar</button>}</div>
             <fieldset disabled={!databaseReady || busy || uploadingImage} className="mt-6 space-y-4 disabled:opacity-60">
               <label className="block text-sm font-semibold">Nome<input required maxLength={160} value={form.title} onChange={(event) => setField('title', event.target.value)} className="auth-input" placeholder="Ex.: Suporte de fone" /></label>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"><label className="block text-sm font-semibold">Categoria<input required maxLength={80} value={form.category} onChange={(event) => setField('category', event.target.value)} className="auth-input" /></label><label className="block text-sm font-semibold">Preço<input required min="0" step="0.01" type="number" value={form.price} onChange={(event) => setField('price', event.target.value)} className="auth-input" placeholder="0,00" /></label></div>
@@ -245,21 +245,21 @@ export default function AdminDashboard({
               <div className="space-y-3">
                 <p className="text-sm font-semibold">Imagem do produto</p>
                 <div className="grid grid-cols-2 gap-2">
-                  <button type="button" aria-pressed={imageMode === 'upload'} onClick={() => { setImageMode('upload'); setField('image', ''); setImagePreview(''); }} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${imageMode === 'upload' ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:border-slate-400'}`}>
+                  <button type="button" aria-pressed={imageMode === 'upload'} onClick={() => { setImageMode('upload'); setField('image', ''); setImagePreview(''); }} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${imageMode === 'upload' ? 'border-[#ef6b3b] bg-[#fff3ed] text-[#8e3c25]' : 'border-[#d9d2c5] text-[#66675d] hover:border-[#b7b1a4]'}`}>
                     Enviar arquivo
                   </button>
-                  <button type="button" aria-pressed={imageMode === 'url'} onClick={() => { setImageMode('url'); setField('image', ''); setImagePreview(''); }} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${imageMode === 'url' ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:border-slate-400'}`}>
+                  <button type="button" aria-pressed={imageMode === 'url'} onClick={() => { setImageMode('url'); setField('image', ''); setImagePreview(''); }} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${imageMode === 'url' ? 'border-[#ef6b3b] bg-[#fff3ed] text-[#8e3c25]' : 'border-[#d9d2c5] text-[#66675d] hover:border-[#b7b1a4]'}`}>
                     Usar URL
                   </button>
                 </div>
                 {imageMode === 'upload' && (
                   <div className="space-y-3">
-                    <label className="block text-sm font-medium text-slate-600">
+                    <label className="block text-sm font-medium text-[#66675d]">
                       Escolha uma imagem
-                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadImage} className="mt-2 block w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:font-semibold file:text-white hover:border-teal-500" />
-                      <span className="mt-2 block text-xs font-normal text-slate-500">JPG, PNG ou WEBP · até 5 MB</span>
+                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadImage} className="mt-2 block w-full cursor-pointer rounded-xl border border-dashed border-[#c8c0b2] bg-[#f3f0e8] px-3 py-3 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#242622] file:px-3 file:py-2 file:font-semibold file:text-white hover:border-[#ef6b3b]" />
+                      <span className="mt-2 block text-xs font-normal text-[#777568]">JPG, PNG ou WEBP · até 5 MB</span>
                     </label>
-                    {imagePreview && <div className="relative h-36 overflow-hidden rounded-2xl bg-slate-100"><Image src={imagePreview} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}
+                    {imagePreview && <div className="product-card-image relative h-36 overflow-hidden rounded-2xl"><Image src={imagePreview} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}
                   </div>
                 )}
                 {imageMode === 'url' && (
@@ -268,22 +268,22 @@ export default function AdminDashboard({
                       URL da imagem
                       <input required type="url" value={form.image} onChange={(event) => setField('image', event.target.value)} className="auth-input" placeholder="https://..." />
                     </label>
-                    {form.image && <div className="relative h-36 overflow-hidden rounded-2xl bg-slate-100"><Image src={form.image} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}
+                    {form.image && <div className="product-card-image relative h-36 overflow-hidden rounded-2xl"><Image src={form.image} alt="Prévia da imagem do produto" fill unoptimized className="object-contain p-4" /></div>}
                   </div>
                 )}
-                {uploadingImage && <p className="text-xs font-semibold text-teal-700">Enviando imagem...</p>}
+                {uploadingImage && <p className="text-xs font-semibold text-[#c94924]">Enviando imagem...</p>}
               </div>
               <label className="block text-sm font-semibold">Descrição<textarea required maxLength={5000} value={form.description} onChange={(event) => setField('description', event.target.value)} className="auth-input min-h-28" /></label>
-              <button className="w-full rounded-xl bg-teal-600 px-4 py-3 font-bold text-white transition hover:bg-teal-500">{busy ? 'Salvando...' : editingId === null ? 'Salvar produto' : 'Salvar alterações'}</button>
+              <button className="w-full rounded-full bg-[#ef6b3b] px-4 py-3 font-bold text-white transition hover:bg-[#c94924]">{busy ? 'Salvando...' : editingId === null ? 'Salvar produto' : 'Salvar alterações'}</button>
             </fieldset>
           </form>
 
           <section className="min-w-0">
-            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Biblioteca de produtos</p><h2 className="mt-2 text-3xl font-bold">Escolha o que exibir</h2></div><div className="relative w-full sm:max-w-xs"><span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none focus:border-teal-600" placeholder="Buscar produto..." /></div></div>
-            <div className="mt-6 flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm"><button type="button" onClick={() => setActiveView('catalog')} className={`rounded-xl px-4 py-2.5 text-sm font-bold transition ${activeView === 'catalog' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100'}`}>Meu catálogo <span className="ml-1 opacity-60">{catalogProducts.length}</span></button><button type="button" onClick={() => setActiveView('fake')} className={`rounded-xl px-4 py-2.5 text-sm font-bold transition ${activeView === 'fake' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100'}`}>API fake <span className="ml-1 opacity-60">{fakeProducts.length}</span></button></div>
-            {activeView === 'fake' && <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">Estes produtos vêm da Fake Store API e servem como referência visual. Clique em <strong>Usar no cadastro</strong>, revise os dados e salve no seu catálogo.</div>}
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c94924]">Biblioteca de produtos</p><h2 className="mt-2 text-3xl font-bold tracking-[-.03em]">Escolha o que exibir</h2></div><div className="relative w-full sm:max-w-xs"><span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#999587]">⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} className="w-full rounded-xl border border-[#d9d2c5] bg-[#fbfaf6] py-3 pl-10 pr-4 text-sm outline-none focus:border-[#ef6b3b]" placeholder="Buscar produto..." /></div></div>
+            <div className="mt-6 flex flex-wrap gap-2 rounded-2xl border border-[#d9d2c5] bg-[#fbfaf6] p-2 shadow-sm"><button type="button" onClick={() => setActiveView('catalog')} className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${activeView === 'catalog' ? 'bg-[#242622] text-white' : 'text-[#66675d] hover:bg-[#e8e1d4]'}`}>Meu catálogo <span className="ml-1 opacity-60">{catalogProducts.length}</span></button><button type="button" onClick={() => setActiveView('fake')} className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${activeView === 'fake' ? 'bg-[#242622] text-white' : 'text-[#66675d] hover:bg-[#e8e1d4]'}`}>API fake <span className="ml-1 opacity-60">{fakeProducts.length}</span></button></div>
+            {activeView === 'fake' && <div className="mt-4 rounded-2xl border border-[#d9d2c5] bg-[#e8e1d4] p-4 text-sm leading-6 text-[#55564f]">Estes produtos vêm da Fake Store API e servem como referência visual. Clique em <strong>Usar no cadastro</strong>, revise os dados e salve no seu catálogo.</div>}
             <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{(activeView === 'catalog' ? catalogResults : fakeResults).map((product) => productCard(product, activeView === 'fake'))}</div>
-            {(activeView === 'catalog' ? catalogResults : fakeResults).length === 0 && <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center"><p className="text-3xl">⌁</p><h3 className="mt-3 font-bold">Nenhum produto encontrado</h3><p className="mt-2 text-sm text-slate-500">Tente outro termo de busca ou alterne a biblioteca.</p></div>}
+            {(activeView === 'catalog' ? catalogResults : fakeResults).length === 0 && <div className="mt-6 rounded-3xl border border-dashed border-[#c8c0b2] bg-[#fbfaf6] p-12 text-center"><p className="text-3xl text-[#ef6b3b]">⌁</p><h3 className="mt-3 text-xl font-bold">Nenhum produto encontrado</h3><p className="mt-2 text-sm text-[#777568]">Tente outro termo de busca ou alterne a biblioteca.</p></div>}
           </section>
         </section>
       </div>

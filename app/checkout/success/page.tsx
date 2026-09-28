@@ -36,7 +36,7 @@ export default function SuccessPage() {
           ✓
         </motion.div>
         <p className="mt-4 text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">Pedido concluído</p>
-        <h1 className="mt-2 font-serif text-4xl tracking-[-.04em]">Obrigado, {user.name.split(' ')[0]}!</h1>
+        <h1 className="mt-2 text-4xl tracking-[-.04em]">Obrigado, {user.name.split(' ')[0]}!</h1>
         <p className="mt-2 text-[#777568]">
           {lastOrder?.persistence === 'local'
             ? 'Este pedido foi salvo somente neste navegador e ainda não está sincronizado com o banco de dados.'

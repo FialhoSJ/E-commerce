@@ -64,7 +64,7 @@ export default function Cart() {
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
             >
               <div className="flex shrink-0 items-center justify-between border-b border-[#d9d2c5] pb-5">
-                <h2 className="font-serif text-2xl">Sua seleção</h2>
+                <h2 className="text-2xl">Sua seleção</h2>
                 <button onClick={() => setOpen(false)} className="rounded-full p-2 text-2xl leading-none hover:bg-slate-100" aria-label="Fechar carrinho">×</button>
               </div>
               {cart.length === 0 ? (
