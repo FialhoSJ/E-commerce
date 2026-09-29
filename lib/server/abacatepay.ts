@@ -40,7 +40,8 @@ export async function createHostedCheckout(input: {
 
   const checkout = await request<{ id: string; url: string }>('/checkouts/create', {
     items: [{ id: product.id, quantity: 1 }],
-    methods: ['PIX', 'CARD'],
+    // Card payments are not enabled for this AbacatePay account yet.
+    methods: ['PIX'],
     externalId: input.orderId,
     returnUrl: `${input.origin}/checkout`,
     completionUrl: `${input.origin}/checkout/success?orderId=${encodeURIComponent(input.orderId)}`,

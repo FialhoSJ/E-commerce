@@ -1,7 +1,9 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { ProductReview, ProductType } from '@/lib/types/ProductType';
+import { createClient } from '@/lib/supabase/client';
 
 export type User = { name: string; email: string; isAdmin?: boolean };
 export type CartItem = ProductType & { quantity: number };
@@ -9,18 +11,18 @@ export type Order = { id: string; items: CartItem[]; total: number; subtotal?: n
 
 type StoreContextValue = {
   user: User | null;
+  authReady: boolean;
   reviews: Record<number, ProductReview[]>;
   addReview: (review: Omit<ProductReview, 'id' | 'createdAt' | 'author'>) => string | null;
   cart: CartItem[];
   cartCount: number;
   cartTotal: number;
   lastOrder: Order | null;
-  signIn: (email: string, password: string) => string | null;
-  signUp: (name: string, email: string, password: string) => string | null;
-  signOut: () => void;
-  requestPasswordReset: (email: string) => void;
-  verifyPasswordReset: (email: string, code: string) => string | null;
-  resetPassword: (email: string, password: string) => boolean;
+  signIn: (email: string, password: string) => Promise<string | null>;
+  signUp: (name: string, email: string, password: string, redirect?: string) => Promise<{ error: string | null; needsEmailConfirmation: boolean }>;
+  signOut: () => Promise<string | null>;
+  requestPasswordReset: (email: string) => Promise<string | null>;
+  resetPassword: (password: string) => Promise<string | null>;
   addToCart: (product: ProductType) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
@@ -30,14 +32,32 @@ type StoreContextValue = {
 };
 
 const StoreContext = createContext<StoreContextValue | null>(null);
-const USERS_KEY = '3d-store-users';
-const SESSION_KEY = '3d-store-session';
 const CART_KEY = '3d-store-cart';
-const RESET_KEY = '3d-store-reset';
 const ORDER_KEY = '3d-store-last-order';
 const REVIEWS_KEY = '3d-store-reviews';
 
-type StoredUser = User & { password: string };
+function mapAuthUser(user: SupabaseUser | null): User | null {
+  if (!user?.email) return null;
+  const metadataName = user.user_metadata?.full_name;
+  const name = typeof metadataName === 'string' && metadataName.trim()
+    ? metadataName.trim()
+    : user.email.split('@')[0];
+  return { name, email: user.email };
+}
+
+function errorMessage(error: unknown) {
+  if (!(error instanceof Error)) return 'Não foi possível conectar ao serviço de autenticação. Tente novamente.';
+
+  const message = error.message.toLowerCase();
+  if (message.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+  if (message.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar. Verifique também a caixa de spam.';
+  if (message.includes('user already registered')) return 'Este e-mail já tem uma conta. Tente entrar.';
+  if (message.includes('password should be at least')) return 'A senha precisa ter pelo menos 6 caracteres.';
+  if (message.includes('email rate limit exceeded') || message.includes('too many requests')) return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
+  if (message.includes('failed to fetch') || message.includes('network')) return 'Não foi possível conectar. Confira sua internet e tente novamente.';
+  if (message.includes('configure') || message.includes('supabase')) return 'O serviço de autenticação está indisponível no momento.';
+  return error.message;
+}
 
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;
@@ -48,20 +68,46 @@ function readStorage<T>(key: string, fallback: T): T {
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [reviews, setReviews] = useState<Record<number, ProductReview[]>>({});
 
   useEffect(() => {
+    let active = true;
+    let subscription: { unsubscribe: () => void } | undefined;
     const frame = window.requestAnimationFrame(() => {
-      setUser(readStorage<User | null>(SESSION_KEY, null));
       setCart(readStorage<CartItem[]>(CART_KEY, []));
       setLastOrder(readStorage<Order | null>(ORDER_KEY, null));
       setReviews(readStorage<Record<number, ProductReview[]>>(REVIEWS_KEY, {}));
+      // Remove the old demo credentials/session, which were stored in plain text.
+      localStorage.removeItem('3d-store-users');
+      localStorage.removeItem('3d-store-session');
+      localStorage.removeItem('3d-store-reset');
       setHydrated(true);
     });
-    return () => window.cancelAnimationFrame(frame);
+
+    try {
+      const supabase = createClient();
+      const auth = supabase.auth.onAuthStateChange((_event, session) => {
+        if (active) setUser(mapAuthUser(session?.user ?? null));
+      });
+      subscription = auth.data.subscription;
+      void supabase.auth.getUser().then(({ data, error }) => {
+        if (active && !error) setUser(mapAuthUser(data.user));
+      }).catch(() => undefined).finally(() => {
+        if (active) setAuthReady(true);
+      });
+    } catch {
+      setAuthReady(true);
+    }
+
+    return () => {
+      active = false;
+      window.cancelAnimationFrame(frame);
+      subscription?.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -73,69 +119,61 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (!hydrated) return;
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
   }, [hydrated, reviews]);
-  const signIn = (email: string, password: string) => {
-    const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    const found = users.find((item) => item.email === email.trim().toLowerCase() && item.password === password);
-    if (!found) return 'E-mail ou senha inválidos.';
-    const session = { name: found.name, email: found.email, isAdmin: found.isAdmin };
-    setUser(session);
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    return null;
-  };
-
-  const signUp = (name: string, email: string, password: string) => {
-    const normalizedEmail = email.trim().toLowerCase();
-    const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    if (users.some((item) => item.email === normalizedEmail)) return 'Este e-mail já está cadastrado.';
-    const newUser = { name: name.trim(), email: normalizedEmail, password, isAdmin: false };
-    localStorage.setItem(USERS_KEY, JSON.stringify([...users, newUser]));
-    const session = { name: newUser.name, email: newUser.email, isAdmin: false };
-    setUser(session);
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    return null;
-  };
-
-  const signOut = () => {
-    setUser(null);
-    localStorage.removeItem(SESSION_KEY);
-  };
-
-  const requestPasswordReset = (email: string) => {
-    const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    const normalizedEmail = email.trim().toLowerCase();
-    const exists = users.some((item) => item.email === normalizedEmail);
-    if (exists) {
-      const code = String(Math.floor(100000 + Math.random() * 900000));
-      localStorage.setItem(RESET_KEY, JSON.stringify({ email: normalizedEmail, code, expiresAt: Date.now() + 10 * 60 * 1000, attempts: 0, verified: false }));
-      // Substituir por Resend/SMTP no backend. Nunca exponha o código na resposta da API.
-      console.info(`[3D Store] OTP de desenvolvimento para ${normalizedEmail}: ${code}`);
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { error } = await createClient().auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+      return error ? errorMessage(error) : null;
+    } catch (error) {
+      return errorMessage(error);
     }
   };
 
-  const verifyPasswordReset = (email: string, code: string) => {
-    const reset = JSON.parse(localStorage.getItem(RESET_KEY) || 'null');
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!reset || reset.email !== normalizedEmail || Date.now() > reset.expiresAt) return 'Código inválido ou expirado.';
-    if (reset.attempts >= 5) return 'Limite de tentativas atingido. Solicite um novo código.';
-    if (reset.code !== code.trim()) {
-      reset.attempts += 1;
-      localStorage.setItem(RESET_KEY, JSON.stringify(reset));
-      return 'Código inválido ou expirado.';
+  const signUp = async (name: string, email: string, password: string, redirect = '/') => {
+    try {
+      const { data, error } = await createClient().auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: { full_name: name.trim() },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
+        },
+      });
+      return { error: error ? errorMessage(error) : null, needsEmailConfirmation: !error && !data.session };
+    } catch (error) {
+      return { error: errorMessage(error), needsEmailConfirmation: false };
     }
-    reset.verified = true;
-    localStorage.setItem(RESET_KEY, JSON.stringify(reset));
-    return null;
   };
 
-  const resetPassword = (email: string, password: string) => {
-    const users: StoredUser[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!users.some((item) => item.email === normalizedEmail)) return false;
-    const reset = JSON.parse(localStorage.getItem(RESET_KEY) || 'null');
-    if (!reset || reset.email !== normalizedEmail || !reset.verified || Date.now() > reset.expiresAt) return false;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users.map((item) => item.email === normalizedEmail ? { ...item, password } : item)));
-    localStorage.removeItem(RESET_KEY);
-    return true;
+  const signOut = async () => {
+    try {
+      const { error } = await createClient().auth.signOut();
+      return error ? errorMessage(error) : null;
+    } catch (error) {
+      return errorMessage(error);
+    }
+  };
+
+  const requestPasswordReset = async (email: string) => {
+    try {
+      const { error } = await createClient().auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      });
+      return error ? errorMessage(error) : null;
+    } catch (error) {
+      return errorMessage(error);
+    }
+  };
+
+  const resetPassword = async (password: string) => {
+    try {
+      const { error } = await createClient().auth.updateUser({ password });
+      return error ? errorMessage(error) : null;
+    } catch (error) {
+      return errorMessage(error);
+    }
   };
 
   const addReview = useCallback((review: Omit<ProductReview, 'id' | 'createdAt' | 'author'>) => {
@@ -180,12 +218,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo(() => ({
-    user, reviews, addReview,
+    user, authReady, reviews, addReview,
     cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0),
     cartTotal: cart.reduce((total, item) => total + (item.price || 0) * item.quantity, 0),
     lastOrder,
-    signIn, signUp, signOut, requestPasswordReset, verifyPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, clearCart, completeOrder, saveOrder,
-  }), [user, reviews, addReview, cart, lastOrder, removeFromCart, updateQuantity, clearCart, completeOrder, saveOrder]);
+    signIn, signUp, signOut, requestPasswordReset, resetPassword, addToCart, removeFromCart, updateQuantity, clearCart, completeOrder, saveOrder,
+  }), [user, authReady, reviews, addReview, cart, lastOrder, removeFromCart, updateQuantity, clearCart, completeOrder, saveOrder]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

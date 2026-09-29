@@ -10,12 +10,12 @@ const money = (value: number) => value.toLocaleString('pt-BR', { style: 'currenc
 
 export default function SuccessPage() {
   const router = useRouter();
-  const { user, lastOrder, clearCart } = useStore();
+  const { user, authReady, lastOrder, clearCart } = useStore();
   const [paymentStatus, setPaymentStatus] = useState('pending_payment');
 
   useEffect(() => {
-    if (!user) router.replace('/auth?redirect=/checkout/success');
-  }, [user, router]);
+    if (authReady && !user) router.replace('/auth?redirect=/checkout/success');
+  }, [authReady, user, router]);
 
   useEffect(() => {
     const orderId = new URLSearchParams(window.location.search).get('orderId');
@@ -41,7 +41,7 @@ export default function SuccessPage() {
     return () => { active = false; };
   }, [clearCart]);
 
-  if (!user) return null;
+  if (!authReady || !user) return null;
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10 text-[#242622] sm:px-8">

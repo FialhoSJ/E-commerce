@@ -2,6 +2,8 @@
 -- Pedidos podem pertencer a perfis Supabase (user_id preenchido) ou às contas locais atuais.
 alter table orders alter column user_id drop not null;
 alter table orders add column if not exists customer_email text;
+alter table orders add column if not exists payment_provider text;
+alter table orders add column if not exists payment_reference text;
 
 -- Mantém os dados antigos compatíveis com a nova coluna obrigatória no schema.
 update orders o

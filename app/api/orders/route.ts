@@ -1,6 +1,7 @@
 import { getCatalogProduct } from '@/lib/server/catalog';
 import { createHostedCheckout } from '@/lib/server/abacatepay';
 import { hasSupabaseConfig, supabaseRequest } from '@/lib/server/supabase';
+import { createClient as createAuthClient } from '@/lib/supabase/server';
 import { isValidPostalCode, quoteDevelopmentShipping } from '@/lib/shipping';
 import type { ShippingAddress } from '@/lib/shipping';
 
@@ -11,17 +12,27 @@ export async function POST(request: Request) {
   if (!process.env.ABACATEPAY_API_KEY) return Response.json({ error: 'Configure ABACATEPAY_API_KEY no servidor.' }, { status: 503 });
   if (!hasSupabaseConfig()) return Response.json({ error: 'Configure o Supabase para persistir pedidos antes de iniciar o pagamento.' }, { status: 503 });
 
+  let userId: string;
+  let email: string;
+  try {
+    const authClient = await createAuthClient();
+    const { data: { user }, error: authError } = await authClient.auth.getUser();
+    if (authError || !user?.email) return Response.json({ error: 'Entre na sua conta para continuar.' }, { status: 401 });
+    if (!user.email_confirmed_at) return Response.json({ error: 'Confirme seu e-mail antes de fazer o pedido.' }, { status: 403 });
+    userId = user.id;
+    email = user.email.trim().toLowerCase();
+  } catch {
+    return Response.json({ error: 'Configure as variáveis públicas de autenticação do Supabase no servidor.' }, { status: 503 });
+  }
+
   try {
     const body = await request.json() as {
-      email?: string;
       items?: OrderItemInput[];
       address?: ShippingAddress;
       shippingId?: string;
     };
-    const email = body.email?.trim().toLowerCase() || '';
     const address = body.address;
     const inputItems = body.items ?? [];
-    if (!/^\S+@\S+\.\S+$/.test(email)) return Response.json({ error: 'Informe um e-mail válido.' }, { status: 400 });
     if (!inputItems.length || inputItems.length > 30 || inputItems.some((item) => !Number.isSafeInteger(item.id) || (item.id as number) < 1 || !Number.isSafeInteger(item.quantity) || (item.quantity as number) < 1 || (item.quantity as number) > 50)) {
       return Response.json({ error: 'Carrinho inválido.' }, { status: 400 });
     }
@@ -43,12 +54,10 @@ export async function POST(request: Request) {
     if (!shipping) return Response.json({ error: 'Opção de frete inválida. Calcule o frete novamente.' }, { status: 400 });
     const shippingCents = Math.round(shipping.price * 100);
     const totalCents = subtotalCents + shippingCents;
-    const profiles = await supabaseRequest<Array<{ id: string }>>(`profiles?select=id&email=eq.${encodeURIComponent(email)}&limit=1`);
-
     const created = await supabaseRequest<CreatedOrder[]>('orders?select=id,created_at', {
       method: 'POST',
       body: JSON.stringify({
-        user_id: profiles[0]?.id ?? null,
+        user_id: userId,
         customer_email: email,
         status: 'pending_payment',
         subtotal_cents: subtotalCents,
@@ -77,34 +86,39 @@ export async function POST(request: Request) {
       throw error;
     }
 
+    let checkout: Awaited<ReturnType<typeof createHostedCheckout>>;
     try {
-      const checkout = await createHostedCheckout({
+      checkout = await createHostedCheckout({
         orderId: order.id,
         totalCents,
         itemCount: products.reduce((sum, item) => sum + item.quantity, 0),
         origin: new URL(request.url).origin,
       });
-      await supabaseRequest(`orders?id=eq.${encodeURIComponent(order.id)}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ payment_provider: 'abacatepay', payment_reference: checkout.id, updated_at: new Date().toISOString() }),
-      });
-      return Response.json({
-        order: {
-          id: order.id,
-          status: 'pending_payment',
-          total: totalCents / 100,
-          subtotal: subtotalCents / 100,
-          shipping: shippingCents / 100,
-          createdAt: order.created_at,
-          items: products.map(({ product, quantity, unitPriceCents }) => ({ ...product, price: unitPriceCents / 100, quantity })),
-        },
-        checkoutUrl: checkout.url,
-        paymentProvider: 'abacatepay',
-      }, { status: 201 });
     } catch (error) {
       await supabaseRequest(`orders?id=eq.${encodeURIComponent(order.id)}`, { method: 'DELETE' }).catch(() => undefined);
       throw error;
     }
+
+    // Keep the order if this bookkeeping update fails: the checkout already
+    // exists, and its externalId lets the webhook find the pending order.
+    await supabaseRequest(`orders?id=eq.${encodeURIComponent(order.id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ payment_provider: 'abacatepay', payment_reference: checkout.id, updated_at: new Date().toISOString() }),
+    }).catch((error) => console.error('Could not save AbacatePay reference for order', order.id, error));
+
+    return Response.json({
+      order: {
+        id: order.id,
+        status: 'pending_payment',
+        total: totalCents / 100,
+        subtotal: subtotalCents / 100,
+        shipping: shippingCents / 100,
+        createdAt: order.created_at,
+        items: products.map(({ product, quantity, unitPriceCents }) => ({ ...product, price: unitPriceCents / 100, quantity })),
+      },
+      checkoutUrl: checkout.url,
+      paymentProvider: 'abacatepay',
+    }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Não foi possível iniciar o pagamento.';
     return Response.json({ error: message }, { status: 400 });
