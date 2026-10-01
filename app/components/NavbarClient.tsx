@@ -8,7 +8,7 @@ import AdminSignOut from './AdminSignOut';
 
 const links = [
   { href: '/', label: 'Home' },
-  { href: '/#sobre', label: 'Sobre nós' },
+  { href: '/#estudio', label: 'Sobre nós' },
   { href: '/loja', label: 'Loja' },
 ];
 

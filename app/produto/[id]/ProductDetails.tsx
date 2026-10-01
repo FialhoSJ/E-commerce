@@ -19,8 +19,18 @@ export default function ProductDetails({ product }: { product: ProductType }) {
 
   const productReviews = reviews[currentProduct.id] || [];
   const averageRating = productReviews.length ? productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length : 0;
-  const add = () => { addToCart(currentProduct); toast.success(`${currentProduct.title} adicionado ao carrinho.`); setAdded(true); window.setTimeout(() => setAdded(false), 1800); };
-  const buyNow = () => { addToCart(currentProduct); router.push(user ? '/checkout' : '/auth?redirect=/checkout'); };
+  const add = () => {
+    if (currentProduct.stock === 0) { toast.error('Este produto está esgotado.'); return; }
+    addToCart(currentProduct);
+    toast.success(`${currentProduct.title} adicionado ao carrinho.`);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1800);
+  };
+  const buyNow = () => {
+    if (currentProduct.stock === 0) { toast.error('Este produto está esgotado.'); return; }
+    addToCart(currentProduct);
+    router.push(user ? '/checkout' : '/auth?redirect=/checkout');
+  };
   const submitReview = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const error = addReview({ productId: currentProduct.id, rating, comment: comment.trim() });
@@ -38,12 +48,13 @@ export default function ProductDetails({ product }: { product: ProductType }) {
         <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">LACIS / {currentProduct.category}</p>
         <h1 className="mt-4 text-4xl leading-[1.02] tracking-[-.04em] sm:text-5xl">{currentProduct.title}</h1>
         <p className="mt-6 text-3xl">{currentProduct.price?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
+        {currentProduct.stock !== undefined && currentProduct.stock <= 3 && <p className={`mt-2 text-sm font-semibold ${currentProduct.stock === 0 ? 'text-red-700' : 'text-amber-700'}`}>{currentProduct.stock === 0 ? 'Produto esgotado.' : `Atenção: restam apenas ${currentProduct.stock} ${currentProduct.stock === 1 ? 'unidade' : 'unidades'} em estoque. Está se esgotando!`}</p>}
         <div className="my-6 h-px w-full bg-[#d9d2c5]" />
         <p className="leading-7 text-[#66675d]">{currentProduct.description}</p>
         <div className="mt-6 grid grid-cols-2 gap-3 border-y border-[#d9d2c5] py-4 text-xs text-[#777568]"><div><span className="block font-bold uppercase tracking-[.12em] text-[#242622]">Produção</span><span className="mt-1 block">Feito sob demanda</span></div><div><span className="block font-bold uppercase tracking-[.12em] text-[#242622]">Material</span><span className="mt-1 block">Impressão 3D de qualidade</span></div></div>
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
-          <button onClick={add} className={`rounded-full border px-5 py-3.5 font-bold transition ${added ? "border-[#6b7046] bg-[#e8e9dd] text-[#555a34]" : "border-[#bdb5a8] text-[#242622] hover:border-[#ef6b3b] hover:text-[#c94924]"}`}>{added ? "✓ Adicionado" : "Adicionar ao carrinho"}</button>
-          <button onClick={buyNow} className="rounded-full bg-[#ef6b3b] px-5 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Comprar agora ↗</button>
+          <button onClick={add} disabled={currentProduct.stock === 0} className={`rounded-full border px-5 py-3.5 font-bold transition disabled:cursor-not-allowed disabled:opacity-50 ${added ? "border-[#6b7046] bg-[#e8e9dd] text-[#555a34]" : "border-[#bdb5a8] text-[#242622] hover:border-[#ef6b3b] hover:text-[#c94924]"}`}>{currentProduct.stock === 0 ? 'Esgotado' : added ? "✓ Adicionado" : "Adicionar ao carrinho"}</button>
+          <button onClick={buyNow} disabled={currentProduct.stock === 0} className="rounded-full bg-[#ef6b3b] px-5 py-3.5 font-bold text-white transition hover:bg-[#c94924] disabled:cursor-not-allowed disabled:opacity-50">{currentProduct.stock === 0 ? 'Esgotado' : 'Comprar agora ↗'}</button>
         </div>
         {added && <Link href="/loja" className="mt-3 text-center text-sm font-semibold text-teal-700">Continuar comprando</Link>}
       </div>

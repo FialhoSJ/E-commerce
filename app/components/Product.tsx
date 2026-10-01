@@ -22,10 +22,11 @@ export interface ProductCardProps extends Omit<HTMLMotionProps<'div'>, 'ref'> {
   originalPrice?: number;
   offerText: string;
   href?: string;
+  stock?: number;
 }
 
 const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
-  ({ className, imageUrl, name, tagline, price, currency = 'R$', isCouponPrice = false, originalPrice, offerText, href, onAddToCart, onBuyNow, ...props }, ref) => {
+  ({ className, imageUrl, name, tagline, price, currency = 'R$', isCouponPrice = false, originalPrice, offerText, href, onAddToCart, onBuyNow, stock, ...props }, ref) => {
     const formatPrice = (amount: number) =>
       new Intl.NumberFormat('pt-BR', {
         style: 'currency',
@@ -45,6 +46,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
         {...props}
       >
         <div className="product-card-image relative mb-4 flex h-52 w-full items-center justify-center overflow-hidden rounded-[1rem] p-4">
+          {stock !== undefined && stock <= 3 && <span className={`absolute left-3 top-3 z-[2] rounded-full px-3 py-1 text-[10px] font-bold ${stock === 0 ? 'bg-red-700 text-white' : 'bg-amber-100 text-amber-900'}`}>{stock === 0 ? 'Esgotado' : `Últimas ${stock} ${stock === 1 ? 'unidade' : 'unidades'}`}</span>}
           <Image
             src={imageUrl}
             unoptimized
@@ -71,8 +73,8 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
             <span className="font-semibold text-[#6b7046]">{offerText}</span>
           </div>
           <div className="grid w-full gap-2 sm:grid-cols-2">
-            {onAddToCart && <button onClick={onAddToCart} className="rounded-full border border-[#d9d2c5] px-3 py-2.5 text-xs font-bold text-[#242622] transition hover:border-[#ef6b3b] hover:text-[#c94924]">Adicionar</button>}
-            {onBuyNow && <button onClick={onBuyNow} className="rounded-full bg-[#242622] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#ef6b3b]">Comprar ↗</button>}
+            {onAddToCart && <button onClick={onAddToCart} disabled={stock === 0} className="rounded-full border border-[#d9d2c5] px-3 py-2.5 text-xs font-bold text-[#242622] transition hover:border-[#ef6b3b] hover:text-[#c94924] disabled:cursor-not-allowed disabled:opacity-50">{stock === 0 ? 'Esgotado' : 'Adicionar'}</button>}
+            {onBuyNow && <button onClick={onBuyNow} disabled={stock === 0} className="rounded-full bg-[#242622] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#ef6b3b] disabled:cursor-not-allowed disabled:opacity-50">{stock === 0 ? 'Esgotado' : 'Comprar ↗'}</button>}
           </div>
           {href && <Link href={href} className="mt-1 text-xs font-bold text-[#777568] transition hover:text-[#ef6b3b]">Ver detalhes ↗</Link>}
         </div>
@@ -101,6 +103,7 @@ export function Product({ product }: { product: ProductType }) {
       currency="R$"
       offerText="Oferta especial"
       href={`/produto/${product.id}`}
+      stock={product.stock}
       onAddToCart={add}
       onBuyNow={buyNow}
     />

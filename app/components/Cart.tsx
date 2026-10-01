@@ -31,6 +31,14 @@ export default function Cart() {
     toast(`${title} removido do carrinho.`);
   };
 
+  const decreaseQuantity = (id: number, quantity: number) => {
+    if (quantity <= 1) {
+      toast('A quantidade mínima é 1. Use “Remover” para excluir o produto do carrinho.');
+      return;
+    }
+    updateQuantity(id, quantity - 1);
+  };
+
   return <>
     <button onClick={() => setOpen(true)} className="relative rounded-full px-3 py-2 text-sm font-semibold text-[#242622] transition hover:bg-[#e8e1d4]" aria-label="Abrir carrinho">
       <span className="inline-flex items-center gap-2">
@@ -78,8 +86,9 @@ export default function Cart() {
                         <div className="min-w-0 flex-1">
                           <p className="truncate font-semibold">{item.title}</p>
                           <p className="text-sm text-teal-700">{money(item.price || 0)}</p>
+                          {item.stock !== undefined && item.stock <= 3 && <p className={`mt-1 text-xs font-semibold ${item.stock === 0 ? 'text-red-700' : 'text-amber-700'}`}>{item.stock === 0 ? 'Esgotado' : `Apenas ${item.stock} ${item.stock === 1 ? 'unidade' : 'unidades'} em estoque — está se esgotando`}</p>}
                           <div className="mt-2 flex items-center gap-2">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="rounded bg-slate-100 px-2">−</button>
+                            <button onClick={() => decreaseQuantity(item.id, item.quantity)} aria-label={`Diminuir quantidade de ${item.title}`} className="rounded bg-slate-100 px-2">−</button>
                             <span>{item.quantity}</span>
                             <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="rounded bg-slate-100 px-2">+</button>
                             <button onClick={() => remove(item.id, item.title)} className="ml-auto text-xs text-red-600">Remover</button>
