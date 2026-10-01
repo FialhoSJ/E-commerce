@@ -45,14 +45,14 @@ O endpoint mantém o modo `development` para permitir demonstração local sem c
 - Melhor Envio ou Frenet para cotação real, etiqueta e rastreamento.
 - Serviço de e-mail para confirmação, recuperação de senha e atualização de rastreio.
 
-### AbacatePay em modo de desenvolvimento
+### Asaas
 
-- O checkout hospedado AbacatePay está integrado para PIX e cartão.
-- O servidor consulta novamente preço e estoque do catálogo, recalcula o frete e o total, cria o pedido e gera a URL de pagamento.
-- O pedido só muda para `paid` quando chega um webhook `checkout.completed` com o secret e a assinatura HMAC válidos.
-- Para bancos já criados, execute `database/abacatepay_migration.sql` no SQL Editor do Supabase.
-- Configure `ABACATEPAY_API_KEY` no servidor. A chave de desenvolvimento deve começar com `abc_dev_` e nunca deve receber prefixo `NEXT_PUBLIC_`.
-- Crie no painel da AbacatePay um webhook para `https://SEU-DOMINIO/api/webhooks/abacatepay?webhookSecret=SEU_SECRET`, usando o mesmo valor de `ABACATEPAY_WEBHOOK_SECRET` definido no servidor. Para testar localmente, exponha a porta da aplicação com um túnel HTTPS e cadastre a URL pública do túnel.
+- O checkout hospedado do Asaas aceita Pix e cartão de crédito.
+- Configure `ASAAS_ENVIRONMENT` como `sandbox` ou `production` e preencha `ASAAS_API_KEY` somente no servidor.
+- Configure `ASAAS_WEBHOOK_TOKEN` com um token aleatório de 32 a 255 caracteres. O mesmo token deve ser cadastrado no campo **Auth Token** do webhook Asaas.
+- Para bancos já criados, execute `database/asaas_migration.sql` no SQL Editor do Supabase.
+- Configure `https://SEU-DOMINIO/api/webhooks/asaas` no painel Asaas, API version 3, envio sequencial, evento `CHECKOUT_PAID`.
+- O endpoint confere o header `asaas-access-token`, o ID do checkout e a referência do pedido antes de atualizar o status para `paid`. Eventos repetidos não alteram pedidos já pagos.
 - A página de retorno mostra o pedido como pendente até que o webhook confirme o pagamento.
 
 ## Pontos de segurança antes de publicar

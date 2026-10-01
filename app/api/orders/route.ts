@@ -1,5 +1,5 @@
 import { getCatalogProduct } from '@/lib/server/catalog';
-import { createHostedCheckout } from '@/lib/server/abacatepay';
+import { createAsaasCheckout } from '@/lib/server/asaas';
 import { hasSupabaseConfig, supabaseRequest } from '@/lib/server/supabase';
 import { createClient as createAuthClient } from '@/lib/supabase/server';
 
@@ -7,7 +7,7 @@ type OrderItemInput = { id?: number; quantity?: number };
 type CreatedOrder = { id: string; created_at: string };
 
 export async function POST(request: Request) {
-  if (!process.env.ABACATEPAY_API_KEY) return Response.json({ error: 'Configure ABACATEPAY_API_KEY no servidor.' }, { status: 503 });
+  if (!process.env.ASAAS_API_KEY) return Response.json({ error: 'Configure ASAAS_API_KEY no servidor.' }, { status: 503 });
   if (!hasSupabaseConfig()) return Response.json({ error: 'Configure o Supabase para persistir pedidos antes de iniciar o pagamento.' }, { status: 503 });
 
   let userId: string;
@@ -57,12 +57,12 @@ export async function POST(request: Request) {
         subtotal_cents: subtotalCents,
         shipping_cents: shippingCents,
         total_cents: totalCents,
-        shipping_method: 'checkout_abacatepay',
+        shipping_method: 'checkout_asaas',
         shipping_estimate_days: 0,
         address_snapshot: {
           customer_name: customerName,
           customer_email: email,
-          address_collection: 'abacatepay_checkout',
+          address_collection: 'asaas_checkout',
         },
       }),
     });
@@ -84,12 +84,15 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    let checkout: Awaited<ReturnType<typeof createHostedCheckout>>;
+    let checkout: Awaited<ReturnType<typeof createAsaasCheckout>>;
     try {
-      checkout = await createHostedCheckout({
+      checkout = await createAsaasCheckout({
         orderId: order.id,
-        totalCents,
-        itemCount: products.reduce((sum, item) => sum + item.quantity, 0),
+        items: products.map(({ product, quantity, unitPriceCents }) => ({
+          name: product.title,
+          quantity,
+          value: unitPriceCents / 100,
+        })),
         origin: new URL(request.url).origin,
       });
     } catch (error) {
@@ -98,11 +101,11 @@ export async function POST(request: Request) {
     }
 
     // Keep the order if this bookkeeping update fails: the checkout already
-    // exists, and its externalId lets the webhook find the pending order.
+    // exists, and its externalReference lets the webhook find the pending order.
     await supabaseRequest(`orders?id=eq.${encodeURIComponent(order.id)}`, {
       method: 'PATCH',
-      body: JSON.stringify({ payment_provider: 'abacatepay', payment_reference: checkout.id, updated_at: new Date().toISOString() }),
-    }).catch((error) => console.error('Could not save AbacatePay reference for order', order.id, error));
+      body: JSON.stringify({ payment_provider: 'asaas', payment_reference: checkout.id, updated_at: new Date().toISOString() }),
+    }).catch((error) => console.error('Could not save Asaas reference for order', order.id, error));
 
     return Response.json({
       order: {
@@ -114,7 +117,7 @@ export async function POST(request: Request) {
         items: products.map(({ product, quantity, unitPriceCents }) => ({ ...product, price: unitPriceCents / 100, quantity })),
       },
       checkoutUrl: checkout.url,
-      paymentProvider: 'abacatepay',
+      paymentProvider: 'asaas',
     }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Não foi possível iniciar o pagamento.';

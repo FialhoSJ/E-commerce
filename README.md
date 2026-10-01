@@ -41,7 +41,15 @@ O acesso administrativo usa o e-mail definido em `ADMIN_EMAIL` (no exemplo, `adm
 
 O catálogo precisa do Supabase configurado em `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. Em um banco novo, execute `database/schema.sql` no SQL Editor do Supabase. Se a tabela `products` já existir, execute `database/admin_catalog_migration.sql`.
 
-Para habilitar o checkout de teste do AbacatePay, execute também `database/abacatepay_migration.sql` em bancos existentes e configure `ABACATEPAY_API_KEY` no `.env.local` (somente servidor). Configure o webhook `/api/webhooks/abacatepay` no painel AbacatePay com `checkout.completed` e o mesmo `ABACATEPAY_WEBHOOK_SECRET` do servidor. O webhook exige URL HTTPS pública; para desenvolvimento local, use um túnel HTTPS.
+### Pagamentos com Asaas
+
+1. Em `.env.local`, configure `ASAAS_ENVIRONMENT=sandbox` e preencha `ASAAS_API_KEY` com a chave de API de testes do Asaas. A chave fica somente no servidor.
+2. Gere um token aleatório de 32 a 255 caracteres sem espaços e preencha `ASAAS_WEBHOOK_TOKEN`. Use esse mesmo valor no campo **Auth Token** do webhook no painel Asaas; não use a chave da API como token.
+3. Execute `database/asaas_migration.sql` no SQL Editor do Supabase se a tabela `orders` já existir.
+4. No painel Asaas, acesse **Menu do usuário > Integrações > Webhooks** e crie um webhook com a URL `https://SEU-DOMINIO/api/webhooks/asaas`, versão 3, envio sequencial e o evento `CHECKOUT_PAID`. Para desenvolvimento local, exponha o servidor por um túnel HTTPS e cadastre a URL pública.
+5. Faça um pagamento de teste no sandbox. O pedido só muda para `paid` quando o endpoint recebe `CHECKOUT_PAID` com o token correto.
+
+O checkout hospedado oferece Pix e cartão e expira em 24 horas. Depois de validar no sandbox, use `ASAAS_ENVIRONMENT=production` e a chave de API de produção.
 
 ## Contas de clientes com Supabase Auth
 

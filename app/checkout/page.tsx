@@ -51,7 +51,7 @@ export default function CheckoutPage() {
       <section className="rounded-[1.7rem] border border-[#d9d2c5] bg-[#f8f6f0] p-6 sm:p-8">
         <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#ef6b3b]">LACIS / Confirmação</p>
         <h1 className="mt-3 text-4xl tracking-[-.04em]">Confirme seu pedido</h1>
-        <p className="mt-3 text-sm leading-6 text-[#777568]">Olá, {user.name.split(' ')[0]}. Confira os itens e o total antes de seguir para o checkout seguro do AbacatePay.</p>
+        <p className="mt-3 text-sm leading-6 text-[#777568]">Olá, {user.name.split(' ')[0]}. Confira os itens e o total antes de seguir para o checkout seguro do Asaas.</p>
 
         <div className="mt-8 rounded-2xl border border-[#e5ded2] bg-white/70 p-5">
           <p className="text-xs font-bold uppercase tracking-[.14em] text-[#777568]">Conta da compra</p>
@@ -74,9 +74,9 @@ export default function CheckoutPage() {
         <div className="mt-5 flex justify-between border-y border-white/15 py-5 text-sm text-white/75"><span>Subtotal</span><span>{money(cartTotal)}</span></div>
         <div className="flex justify-between pt-5 text-xl"><span>Total</span><span>{money(cartTotal)}</span></div>
         <button onClick={handleCheckout} disabled={submitting || cart.length === 0} className="mt-6 w-full rounded-full bg-[#ef6b3b] px-4 py-3.5 font-bold text-white transition hover:bg-white hover:text-[#242622] disabled:cursor-not-allowed disabled:opacity-50">
-          {submitting ? 'Abrindo AbacatePay...' : 'Continuar para pagamento ↗'}
+          {submitting ? 'Abrindo Asaas...' : 'Continuar para pagamento ↗'}
         </button>
-        <p className="mt-3 text-xs leading-5 text-white/55">Você será direcionado ao AbacatePay para concluir o pagamento. O pedido só será confirmado após a confirmação do pagamento.</p>
+        <p className="mt-3 text-xs leading-5 text-white/55">Você será direcionado ao Asaas para pagar via Pix ou cartão. O pedido só será confirmado após a confirmação do pagamento.</p>
       </aside>
     </div>
   </main>;
