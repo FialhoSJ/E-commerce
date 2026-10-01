@@ -41,7 +41,11 @@ O acesso administrativo usa o e-mail definido em `ADMIN_EMAIL` (no exemplo, `adm
 
 O catálogo precisa do Supabase configurado em `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. Em um banco novo, execute `database/schema.sql` no SQL Editor do Supabase. Se a tabela `products` já existir, execute `database/admin_catalog_migration.sql`.
 
-Para habilitar o checkout de teste do AbacatePay, execute também `database/abacatepay_migration.sql` em bancos existentes e configure `ABACATEPAY_API_KEY` no `.env.local` (somente servidor). Configure o webhook `/api/webhooks/abacatepay` no painel AbacatePay com `checkout.completed` e o mesmo `ABACATEPAY_WEBHOOK_SECRET` do servidor. O webhook exige URL HTTPS pública; para desenvolvimento local, use um túnel HTTPS.
+## Pagamentos com Asaas
+
+O checkout usa exclusivamente o Asaas. Em desenvolvimento, configure uma chave Sandbox em `ASAAS_API_KEY` e mantenha `ASAAS_ENVIRONMENT=sandbox`; em produção, configure a chave de produção e `ASAAS_ENVIRONMENT=production` nas variáveis da hospedagem. Nunca use uma chave Sandbox para cobranças reais. As chaves ficam somente no servidor. O checkout pede CPF, cria ou reutiliza o cliente no Asaas e cria uma cobrança `UNDEFINED`, para o pagador escolher a forma de pagamento na fatura hospedada. O CPF é enviado ao Asaas e não é salvo no banco da loja.
+
+Em bancos existentes, execute `database/orders_payment_migration.sql` caso as colunas `payment_provider` e `payment_reference` ainda não existam. Cadastre no painel do Asaas o webhook público `https://SEU-DOMINIO/api/webhooks/asaas`, selecione os eventos `PAYMENT_CONFIRMED` e `PAYMENT_RECEIVED` e configure autenticação com um token aleatório. Defina esse mesmo valor em `ASAAS_WEBHOOK_TOKEN`. Para desenvolvimento local, exponha a aplicação por um túnel HTTPS.
 
 ## Contas de clientes com Supabase Auth
 

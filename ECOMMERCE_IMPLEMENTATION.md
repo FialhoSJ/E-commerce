@@ -45,15 +45,11 @@ O endpoint mantém o modo `development` para permitir demonstração local sem c
 - Melhor Envio ou Frenet para cotação real, etiqueta e rastreamento.
 - Serviço de e-mail para confirmação, recuperação de senha e atualização de rastreio.
 
-### AbacatePay em modo de desenvolvimento
+### Pagamentos com Asaas
 
-- O checkout hospedado AbacatePay está integrado para PIX e cartão.
-- O servidor consulta novamente preço e estoque do catálogo, recalcula o frete e o total, cria o pedido e gera a URL de pagamento.
-- O pedido só muda para `paid` quando chega um webhook `checkout.completed` com o secret e a assinatura HMAC válidos.
-- Para bancos já criados, execute `database/abacatepay_migration.sql` no SQL Editor do Supabase.
-- Configure `ABACATEPAY_API_KEY` no servidor. A chave de desenvolvimento deve começar com `abc_dev_` e nunca deve receber prefixo `NEXT_PUBLIC_`.
-- Crie no painel da AbacatePay um webhook para `https://SEU-DOMINIO/api/webhooks/abacatepay?webhookSecret=SEU_SECRET`, usando o mesmo valor de `ABACATEPAY_WEBHOOK_SECRET` definido no servidor. Para testar localmente, exponha a porta da aplicação com um túnel HTTPS e cadastre a URL pública do túnel.
-- A página de retorno mostra o pedido como pendente até que o webhook confirme o pagamento.
+- O checkout hospedado é criado exclusivamente pelo Asaas; configure Sandbox localmente e credenciais de produção na hospedagem.
+- O pedido permanece como `pending_payment` até que o webhook `/api/webhooks/asaas` confirme o pagamento.
+- Configure `ASAAS_API_KEY`, `ASAAS_ENVIRONMENT` e `ASAAS_WEBHOOK_TOKEN` somente no servidor.
 
 ## Pontos de segurança antes de publicar
 
