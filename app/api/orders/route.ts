@@ -2,8 +2,6 @@ import { getCatalogProduct } from '@/lib/server/catalog';
 import { createHostedCheckout } from '@/lib/server/abacatepay';
 import { hasSupabaseConfig, supabaseRequest } from '@/lib/server/supabase';
 import { createClient as createAuthClient } from '@/lib/supabase/server';
-import { isValidPostalCode, quoteDevelopmentShipping } from '@/lib/shipping';
-import type { ShippingAddress } from '@/lib/shipping';
 
 type OrderItemInput = { id?: number; quantity?: number };
 type CreatedOrder = { id: string; created_at: string };
@@ -14,6 +12,7 @@ export async function POST(request: Request) {
 
   let userId: string;
   let email: string;
+  let customerName: string;
   try {
     const authClient = await createAuthClient();
     const { data: { user }, error: authError } = await authClient.auth.getUser();
@@ -21,6 +20,10 @@ export async function POST(request: Request) {
     if (!user.email_confirmed_at) return Response.json({ error: 'Confirme seu e-mail antes de fazer o pedido.' }, { status: 403 });
     userId = user.id;
     email = user.email.trim().toLowerCase();
+    const metadataName = user.user_metadata?.full_name;
+    customerName = typeof metadataName === 'string' && metadataName.trim()
+      ? metadataName.trim()
+      : email.split('@')[0];
   } catch {
     return Response.json({ error: 'Configure as variáveis públicas de autenticação do Supabase no servidor.' }, { status: 503 });
   }
@@ -28,18 +31,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json() as {
       items?: OrderItemInput[];
-      address?: ShippingAddress;
-      shippingId?: string;
     };
-    const address = body.address;
     const inputItems = body.items ?? [];
     if (!inputItems.length || inputItems.length > 30 || inputItems.some((item) => !Number.isSafeInteger(item.id) || (item.id as number) < 1 || !Number.isSafeInteger(item.quantity) || (item.quantity as number) < 1 || (item.quantity as number) > 50)) {
       return Response.json({ error: 'Carrinho inválido.' }, { status: 400 });
     }
-    if (!address || !isValidPostalCode(address.postalCode) || !address.street?.trim() || !address.number?.trim() || !address.neighborhood?.trim() || !address.city?.trim() || !/^[A-Za-z]{2}$/.test(address.state || '')) {
-      return Response.json({ error: 'Preencha o endereço de entrega.' }, { status: 400 });
-    }
-
     const quantities = new Map<number, number>();
     for (const item of inputItems) quantities.set(item.id!, (quantities.get(item.id!) || 0) + item.quantity!);
     const products = await Promise.all([...quantities].map(async ([id, quantity]) => {
@@ -50,10 +46,8 @@ export async function POST(request: Request) {
     }));
     const subtotalCents = products.reduce((total, item) => total + item.unitPriceCents * item.quantity, 0);
     if (!Number.isSafeInteger(subtotalCents) || subtotalCents <= 0) return Response.json({ error: 'O total do pedido precisa ser maior que zero.' }, { status: 400 });
-    const shipping = quoteDevelopmentShipping(address.postalCode, subtotalCents / 100).find((option) => option.id === body.shippingId);
-    if (!shipping) return Response.json({ error: 'Opção de frete inválida. Calcule o frete novamente.' }, { status: 400 });
-    const shippingCents = Math.round(shipping.price * 100);
-    const totalCents = subtotalCents + shippingCents;
+    const shippingCents = 0;
+    const totalCents = subtotalCents;
     const created = await supabaseRequest<CreatedOrder[]>('orders?select=id,created_at', {
       method: 'POST',
       body: JSON.stringify({
@@ -63,9 +57,13 @@ export async function POST(request: Request) {
         subtotal_cents: subtotalCents,
         shipping_cents: shippingCents,
         total_cents: totalCents,
-        shipping_method: shipping.name,
-        shipping_estimate_days: shipping.deliveryDays,
-        address_snapshot: { ...address, postalCode: address.postalCode.replace(/\D/g, '') },
+        shipping_method: 'checkout_abacatepay',
+        shipping_estimate_days: 0,
+        address_snapshot: {
+          customer_name: customerName,
+          customer_email: email,
+          address_collection: 'abacatepay_checkout',
+        },
       }),
     });
     const order = created[0];
@@ -112,7 +110,6 @@ export async function POST(request: Request) {
         status: 'pending_payment',
         total: totalCents / 100,
         subtotal: subtotalCents / 100,
-        shipping: shippingCents / 100,
         createdAt: order.created_at,
         items: products.map(({ product, quantity, unitPriceCents }) => ({ ...product, price: unitPriceCents / 100, quantity })),
       },

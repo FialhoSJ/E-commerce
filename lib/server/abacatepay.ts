@@ -32,7 +32,7 @@ export async function createHostedCheckout(input: {
   const product = await request<{ id: string }>('/products/create', {
     externalId: `order-${input.orderId}`,
     name: `Pedido Lacis ${input.orderId.slice(0, 8)}`,
-    description: `Pedido com ${input.itemCount} ${input.itemCount === 1 ? 'item' : 'itens'}, incluindo frete.`,
+    description: `Pedido com ${input.itemCount} ${input.itemCount === 1 ? 'item' : 'itens'}.`,
     price: input.totalCents,
     currency: 'BRL',
   });

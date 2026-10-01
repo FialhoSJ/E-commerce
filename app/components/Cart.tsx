@@ -90,7 +90,7 @@ export default function Cart() {
                   </div>
                   <div className="shrink-0 border-t bg-white pt-5">
                     <div className="mb-4 flex justify-between font-bold"><span>Total</span><span>{money(cartTotal)}</span></div>
-                    <button onClick={checkout} className="w-full rounded-full bg-[#ef6b3b] px-4 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Continuar para entrega ↗</button>
+                    <button onClick={checkout} className="w-full rounded-full bg-[#ef6b3b] px-4 py-3.5 font-bold text-white transition hover:bg-[#c94924]">Revisar pedido ↗</button>
                     {!user && <p className="mt-2 text-center text-xs text-slate-500">Você poderá entrar ou criar sua conta no próximo passo.</p>}
                   </div>
                 </>
