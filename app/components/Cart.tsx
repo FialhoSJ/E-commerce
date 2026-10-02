@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 const money = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-export default function Cart() {
+export default function Cart({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -40,15 +40,15 @@ export default function Cart() {
   };
 
   return <>
-    <button onClick={() => setOpen(true)} className="relative rounded-full px-3 py-2 text-sm font-semibold text-[#242622] transition hover:bg-[#e8e1d4]" aria-label="Abrir carrinho">
+    <button onClick={() => setOpen(true)} className={`relative rounded-full px-3 py-2 text-sm font-semibold text-[#242622] transition hover:bg-[#e8e1d4] ${compact ? 'text-[#151515] hover:bg-[#f4f4f4]' : ''}`} aria-label={`Abrir carrinho${cartCount > 0 ? `, ${cartCount} ${cartCount === 1 ? 'item' : 'itens'}` : ''}`}>
       <span className="inline-flex items-center gap-2">
         <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.5L20.5 8H6" />
           <circle cx="10" cy="20" r="1" />
           <circle cx="18" cy="20" r="1" />
         </svg>
-        <span className="hidden sm:inline">Carrinho</span>
-        {cartCount > 0 && <span className="rounded-full bg-[#ef6b3b] px-2 py-0.5 text-xs text-white">{cartCount}</span>}
+        {!compact && <span className="hidden sm:inline">Carrinho</span>}
+        {(cartCount > 0 || compact) && <span className={`rounded-full bg-[#ef6b3b] px-2 py-0.5 text-xs text-white ${compact ? 'absolute -right-0.5 -top-1 min-w-4 px-1 text-center text-[9px]' : ''}`}>{cartCount}</span>}
       </span>
     </button>
 

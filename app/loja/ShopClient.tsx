@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ProductType } from '@/lib/types/ProductType';
@@ -11,13 +11,16 @@ const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transiti
 
 interface ShopClientProps {
   initialProducts: ProductType[];
+  initialSearch: string;
 }
 
-export default function ShopClient({ initialProducts }: ShopClientProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function ShopClient({ initialProducts, initialSearch }: ShopClientProps) {
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const catalogProducts = initialProducts;
+
+  useEffect(() => setSearchQuery(initialSearch), [initialSearch]);
 
 
   // Extrair categorias únicas
